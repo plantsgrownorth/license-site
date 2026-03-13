@@ -1,0 +1,470 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const stateFiles = import.meta.glob('../../../data/states/*.json',      { eager: true });
+  const occFiles   = import.meta.glob('../../../data/occupations/*.json', { eager: true });
+
+  // Build occupation lookup: slug -> national + states data
+  const occMap: Record<string, any> = {};
+  for (const mod of Object.values(occFiles)) {
+    const d = (mod as any).default;
+    occMap[d.slug] = d;
+  }
+
+  const paths: any[] = [];
+  for (const mod of Object.values(stateFiles)) {
+    const stateData = (mod as any).default;
+    for (const occ of stateData.occupations) {
+      const occHub = occMap[occ.slug] ?? null;
+      paths.push({
+        params: { state: stateData.stateSlug, occupation: occ.slug },
+        props: { occ, stateData, occHub },
+      });
+    }
+  }
+  return paths;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmt(n: number | null | undefined) {
+  if (n == null) return 'N/A';
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+}
+function fmtNum(n: number | null | undefined) {
+  if (n == null) return 'N/A';
+  return new Intl.NumberFormat('en-US').format(n);
+}
+function pctDiff(val: number, ref: number): string {
+  if (!ref) return '';
+  const d = Math.round(((val - ref) / ref) * 100);
+  return d >= 0 ? `+${d}% above national average` : `${d}% below national average`;
+}
+// Position a salary value within the 10th–90th percentile range as a percentage
+function barPct(val: number, min: number, max: number): number {
+  if (max === min) return 50;
+  return Math.round(Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100)));
+}
+
+const { occ, stateData, occHub } = Astro.props;
+const natMedian = occHub?.national?.medianAnnual ?? null;
+const diffLabel = natMedian ? pctDiff(occ.medianAnnual, natMedian) : '';
+const isAbove   = diffLabel.startsWith('+');
+
+const year = stateData.dataYear ?? 2024;
+
+const title       = `${occ.title} Salary in ${stateData.state} (${year}) — BLS Data`;
+const description = `${occ.title} median salary in ${stateData.state}: ${fmt(occ.medianAnnual)}/year${natMedian ? `, ${diffLabel}` : ''}. Full percentile breakdown, employment data, and state comparisons from BLS OEWS ${year}.`;
+const canonUrl    = `https://businesslicenseguide.com/salaries/${stateData.stateSlug}/${occ.slug}/`;
+
+// Top comparison states from occupation hub
+const compStates = occHub
+  ? [...occHub.states]
+      .filter((s: any) => s.stateSlug !== stateData.stateSlug && s.medianAnnual)
+      .sort((a: any, b: any) => b.medianAnnual - a.medianAnnual)
+      .slice(0, 8)
+  : [];
+
+// Related occupations in same state
+const related = stateData.occupations
+  .filter((o: any) => o.slug !== occ.slug && o.medianAnnual)
+  .sort((a: any, b: any) => Math.abs(a.medianAnnual - occ.medianAnnual) - Math.abs(b.medianAnnual - occ.medianAnnual))
+  .slice(0, 6);
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: `What is the average ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `The mean ${occ.title} salary in ${stateData.state} is ${fmt(occ.meanAnnual)} per year. The median salary is ${fmt(occ.medianAnnual)} per year, based on BLS OEWS ${year} data.` } },
+    { '@type': 'Question', name: `What is the starting salary for a ${occ.title} in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Entry-level ${occ.title}s in ${stateData.state} typically earn around ${fmt(occ.pct10Annual)} per year (10th percentile), according to BLS OEWS ${year} data.` } },
+    { '@type': 'Question', name: `What is the highest ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Top earners (90th percentile) in this occupation in ${stateData.state} make approximately ${fmt(occ.pct90Annual)} per year, based on BLS OEWS ${year} data.` } },
+    { '@type': 'Question', name: `How many ${occ.title}s work in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `There are approximately ${fmtNum(occ.totalEmployment)} ${occ.title.toLowerCase()}s employed in ${stateData.state}, according to BLS OEWS ${year}.` } },
+  ],
+};
+
+const bar = {
+  pct10: barPct(occ.pct10Annual ?? occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
+  pct25: barPct(occ.pct25Annual ?? occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
+  median: barPct(occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
+  pct75: barPct(occ.pct75Annual ?? occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonUrl} jsonLd={faqSchema}>
+  <Breadcrumbs items={[
+    { label: 'Home',             href: '/' },
+    { label: stateData.state,    href: `/salaries/${stateData.stateSlug}/` },
+    { label: occ.title },
+  ]} />
+
+  <!-- Hero -->
+  <div class="page-hero detail-hero">
+    <div class="container">
+      <span class="eyebrow">{stateData.stateAbbreviation} · BLS OEWS {year} · SOC {occ.socCode}</span>
+      <h1>{occ.title} Salary in {stateData.state}</h1>
+      <div class="hero-salary-row">
+        <div class="hero-salary-main">
+          <span class="salary-label">Median Annual Salary</span>
+          <span class="salary-big">{fmt(occ.medianAnnual)}</span>
+          {diffLabel && (
+            <span class={`nat-diff ${isAbove ? 'pos' : 'neg'}`}>{diffLabel}{natMedian ? ` (national: ${fmt(natMedian)})` : ''}</span>
+          )}
+        </div>
+        <div class="hero-salary-secondary">
+          <div class="mini-stat"><span>{fmt(occ.meanAnnual)}</span><span>Mean Annual</span></div>
+          <div class="mini-stat"><span>{fmt(occ.medianHourly ?? null)}</span><span>Median Hourly</span></div>
+          <div class="mini-stat"><span>{fmtNum(occ.totalEmployment)}</span><span>Employed in State</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container" style="padding-top: 2rem;">
+      <div class="detail-layout">
+
+        <!-- Main Content -->
+        <article>
+
+          <!-- Salary Range Bar -->
+          <div class="section-block">
+            <h2>Salary Range — 10th to 90th Percentile</h2>
+            <div class="range-bar-wrap">
+              <div class="range-bar">
+                <div class="range-fill" style={`left: 0%; width: 100%;`}></div>
+                <div class="range-marker p25"  style={`left: ${bar.pct25}%`}  title={`25th: ${fmt(occ.pct25Annual)}`}></div>
+                <div class="range-marker p75"  style={`left: ${bar.pct75}%`}  title={`75th: ${fmt(occ.pct75Annual)}`}></div>
+                <div class="range-median"      style={`left: ${bar.median}%`} title={`Median: ${fmt(occ.medianAnnual)}`}>
+                  <span class="median-label">{fmt(occ.medianAnnual)}</span>
+                </div>
+              </div>
+              <div class="range-endpoints">
+                <span>{fmt(occ.pct10Annual)}<br/><small>10th pct.</small></span>
+                <span style="text-align:right">{fmt(occ.pct90Annual)}<br/><small>90th pct.</small></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Percentile Table -->
+          <div class="section-block">
+            <h2>Full Percentile Breakdown</h2>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Percentile</th><th class="num-col">Annual Wage</th><th class="num-col">Hourly Wage</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>10th percentile (entry-level)</td><td class="num-col">{fmt(occ.pct10Annual)}</td><td class="num-col">{occ.pct10Hourly ? `$${occ.pct10Hourly.toFixed(2)}` : 'N/A'}</td></tr>
+                  <tr><td>25th percentile</td><td class="num-col">{fmt(occ.pct25Annual)}</td><td class="num-col">{occ.pct25Hourly ? `$${occ.pct25Hourly.toFixed(2)}` : 'N/A'}</td></tr>
+                  <tr class="median-row"><td><strong>50th percentile (median)</strong></td><td class="num-col"><strong>{fmt(occ.medianAnnual)}</strong></td><td class="num-col"><strong>{occ.medianHourly ? `$${occ.medianHourly.toFixed(2)}` : 'N/A'}</strong></td></tr>
+                  <tr><td>75th percentile</td><td class="num-col">{fmt(occ.pct75Annual)}</td><td class="num-col">{occ.pct75Hourly ? `$${occ.pct75Hourly.toFixed(2)}` : 'N/A'}</td></tr>
+                  <tr><td>90th percentile (top earners)</td><td class="num-col">{fmt(occ.pct90Annual)}</td><td class="num-col">{occ.pct90Hourly ? `$${occ.pct90Hourly.toFixed(2)}` : 'N/A'}</td></tr>
+                  <tr><td>Mean (average)</td><td class="num-col">{fmt(occ.meanAnnual)}</td><td class="num-col">{occ.meanHourly ? `$${occ.meanHourly.toFixed(2)}` : 'N/A'}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- State Comparison -->
+          {compStates.length > 0 && (
+            <div class="section-block">
+              <h2>How {stateData.state} Compares</h2>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr><th>State</th><th class="num-col">Median Annual</th><th class="num-col">vs. {stateData.state}</th></tr>
+                  </thead>
+                  <tbody>
+                    {/* Current state row */}
+                    <tr class="current-state-row">
+                      <td><strong>{stateData.state} (current)</strong></td>
+                      <td class="num-col"><strong>{fmt(occ.medianAnnual)}</strong></td>
+                      <td class="num-col">—</td>
+                    </tr>
+                    {compStates.map((s: any) => {
+                      const d = Math.round(((s.medianAnnual - occ.medianAnnual) / occ.medianAnnual) * 100);
+                      const pos = d >= 0;
+                      return (
+                        <tr>
+                          <td><a href={`/salaries/${s.stateSlug}/${occ.slug}/`}>{s.state}</a></td>
+                          <td class="num-col">{fmt(s.medianAnnual)}</td>
+                          <td class="num-col"><span class={`pct-badge ${pos ? 'pos' : 'neg'}`}>{pos ? '+' : ''}{d}%</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-faint); margin-top: 0.5rem;">Showing top-paying states with available data. <a href={`/salaries/${occ.slug}/`}>View all states →</a></p>
+            </div>
+          )}
+
+          <!-- Related Occupations -->
+          {related.length > 0 && (
+            <div class="section-block">
+              <h2>Related Occupations in {stateData.state}</h2>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead><tr><th>Occupation</th><th class="num-col">Median Annual</th><th class="num-col">Employment</th></tr></thead>
+                  <tbody>
+                    {related.map((r: any) => (
+                      <tr>
+                        <td><a href={`/salaries/${stateData.stateSlug}/${r.slug}/`}>{r.title}</a></td>
+                        <td class="num-col salary-cell">{fmt(r.medianAnnual)}</td>
+                        <td class="num-col">{fmtNum(r.totalEmployment)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <!-- FAQ -->
+          <div class="section-block faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>What is the average {occ.title} salary in {stateData.state}?</summary>
+                <div class="faq-answer"><p>The mean {occ.title.toLowerCase()} salary in {stateData.state} is <strong>{fmt(occ.meanAnnual)}</strong> per year. The median (middle) salary is <strong>{fmt(occ.medianAnnual)}</strong> per year. Source: BLS OEWS {year}.</p></div>
+              </details>
+              <details class="faq-item">
+                <summary>What is the starting salary for a {occ.title} in {stateData.state}?</summary>
+                <div class="faq-answer"><p>Entry-level {occ.title.toLowerCase()}s (10th percentile) in {stateData.state} typically earn around <strong>{fmt(occ.pct10Annual)}</strong> per year. Workers at the 25th percentile earn approximately <strong>{fmt(occ.pct25Annual)}</strong> per year.</p></div>
+              </details>
+              <details class="faq-item">
+                <summary>What is the highest {occ.title} salary in {stateData.state}?</summary>
+                <div class="faq-answer"><p>Top earners (90th percentile) in this occupation in {stateData.state} make approximately <strong>{fmt(occ.pct90Annual)}</strong> per year. Those in the 75th percentile earn around <strong>{fmt(occ.pct75Annual)}</strong> per year.</p></div>
+              </details>
+              <details class="faq-item">
+                <summary>How does the {stateData.state} {occ.title} salary compare to the national average?</summary>
+                <div class="faq-answer">
+                  {natMedian ? (
+                    <p>The median {occ.title.toLowerCase()} salary in {stateData.state} is <strong>{fmt(occ.medianAnnual)}</strong>, which is <strong>{diffLabel}</strong> of <strong>{fmt(natMedian)}</strong>.</p>
+                  ) : (
+                    <p>National comparison data is not available at this time.</p>
+                  )}
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- Source disclaimer -->
+          <div class="disclaimer" role="note">
+            <strong>Data Source:</strong> This data is sourced from the U.S. Bureau of Labor Statistics,
+            Occupational Employment and Wage Statistics (OEWS) program, May {year} release.
+            All wages are estimates. Actual salaries may vary based on experience, education,
+            employer, and other factors. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a>
+          </div>
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="license-sidebar">
+          <div class="info-block">
+            <h3>At a Glance</h3>
+            <div class="info-row">
+              <div class="info-icon">📊</div>
+              <div><div class="info-label">Median Annual</div><div class="info-value">{fmt(occ.medianAnnual)}</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">⌛</div>
+              <div><div class="info-label">Median Hourly</div><div class="info-value">{occ.medianHourly ? `$${occ.medianHourly.toFixed(2)}` : 'N/A'}</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">👥</div>
+              <div><div class="info-label">Employment</div><div class="info-value">{fmtNum(occ.totalEmployment)}</div></div>
+            </div>
+            {occ.locationQuotient != null && (
+              <div class="info-row">
+                <div class="info-icon">📍</div>
+                <div>
+                  <div class="info-label">Location Quotient</div>
+                  <div class="info-value">{occ.locationQuotient.toFixed(2)}</div>
+                  <div style="font-size: 0.72rem; color: var(--text-faint); margin-top: 0.15rem;">
+                    {occ.locationQuotient > 1 ? 'More concentrated than national avg' : 'Less concentrated than national avg'}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {occHub?.typicalEducation && (
+            <div class="info-block">
+              <h3>Education Required</h3>
+              <div class="info-row">
+                <div class="info-icon">🎓</div>
+                <div><div class="info-label">Typical Entry</div><div class="info-value">{occHub.typicalEducation}</div></div>
+              </div>
+              {occHub.jobOutlookPercent != null && (
+                <div class="info-row">
+                  <div class="info-icon">📈</div>
+                  <div><div class="info-label">10-Year Growth</div><div class="info-value">{occHub.jobOutlookPercent}%</div></div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div class="info-block">
+            <h3>Quick Links</h3>
+            <ul class="related-links">
+              <li><a href={`/salaries/${stateData.stateSlug}/`}>All salaries in {stateData.state}</a></li>
+              {occHub && <li><a href={`/salaries/${occ.slug}/`}>{occ.title} in all states</a></li>}
+              <li><a href="/">Browse all states</a></li>
+            </ul>
+          </div>
+
+          <div class="verified-badge">
+            <span class="verified-icon">📅</span>
+            <div>
+              <div class="verified-label">Data Release</div>
+              <div class="verified-date">BLS OEWS May {year}</div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .detail-hero { padding-bottom: 2rem; }
+  .hero-salary-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+  .salary-label { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-faint); margin-bottom: 0.2rem; }
+  .salary-big {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 600;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .nat-diff {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+  }
+  .nat-diff.pos { background: #dcfce7; color: #166534; }
+  .nat-diff.neg { background: #fee2e2; color: #991b1b; }
+
+  .hero-salary-secondary {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.4rem;
+  }
+  .mini-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .mini-stat span:first-child { font-weight: 600; font-size: 1.05rem; color: var(--text); }
+  .mini-stat span:last-child { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-faint); }
+
+  /* Salary range bar */
+  .range-bar-wrap { padding: 0.5rem 0 1rem; }
+  .range-bar {
+    position: relative;
+    height: 10px;
+    background: var(--bg-inset);
+    border-radius: 100px;
+    margin: 2rem 0 0.5rem;
+  }
+  .range-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: var(--primary-light);
+    border-radius: 100px;
+  }
+  .range-marker {
+    position: absolute;
+    top: -4px;
+    width: 3px;
+    height: 18px;
+    background: var(--border-dark);
+    border-radius: 2px;
+    transform: translateX(-50%);
+  }
+  .range-median {
+    position: absolute;
+    top: -10px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .range-median::after {
+    content: '';
+    width: 4px;
+    height: 30px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin-top: 2px;
+  }
+  .median-label {
+    background: var(--primary);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  .range-endpoints {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+  .range-endpoints small { color: var(--text-faint); }
+
+  /* Table extras */
+  .num-col { text-align: right; }
+  .salary-cell { font-weight: 600; color: var(--primary); }
+  .median-row td { background: var(--primary-light); }
+  .current-state-row td { background: var(--bg-alt); }
+
+  .pct-badge {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .pct-badge.pos { background: #dcfce7; color: #166534; }
+  .pct-badge.neg { background: #fee2e2; color: #991b1b; }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 0.4rem; }
+  .faq-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .faq-item summary { padding: 0.85rem 1rem; cursor: pointer; font-weight: 500; font-size: 0.875rem; list-style: none; display: flex; justify-content: space-between; }
+  .faq-item summary::after { content: '+'; font-size: 1.1rem; color: var(--primary); }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-answer { padding: 0 1rem 0.85rem; font-size: 0.875rem; border-top: 1px solid var(--border); }
+  .faq-answer p { margin-top: 0.75rem; }
+
+  /* Detail layout */
+  .detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 2rem;
+    align-items: start;
+  }
+  .license-sidebar { position: sticky; top: calc(58px + 1rem); }
+
+  @media (max-width: 900px) {
+    .detail-layout { grid-template-columns: 1fr; }
+    .license-sidebar { position: static; }
+    .hero-salary-row { gap: 1.5rem; }
+  }
+</style>

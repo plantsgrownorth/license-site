@@ -1,17 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import StateList from '../components/StateList.astro';
-import businessTypes from '../data/business-types.json';
-import states from '../data/states.json';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import indexData from '../data/index.json';
 
-const title = 'Business License Requirements by State — 2026 Guide';
-const description =
-  'Find business licensing requirements for all 50 states. Fees, required documents, issuing agencies, and step-by-step application guides for every business type.';
+// Load state files to determine which have data
+const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
+const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
+
+const title       = 'Salary Data by State and Occupation — 2024 BLS OEWS';
+const description = 'Free salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts sourced directly from the U.S. Bureau of Labor Statistics.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Business License Guide',
+  name: 'BLS Salary Guide',
   url: 'https://businesslicenseguide.com',
   description,
 };
@@ -24,92 +26,108 @@ const jsonLd = {
     <div class="container">
       <div class="hero-inner">
         <div class="hero-text">
-          <span class="eyebrow">Free · Updated 2026 · All 50 States</span>
-          <h1>The U.S. Business<br/>License Reference</h1>
+          <span class="eyebrow">Free · BLS OEWS 2024 · All 50 States</span>
+          <h1>U.S. Salary Data<br/>for Every Occupation</h1>
           <p class="hero-lead">
-            Official licensing requirements, fees, and step-by-step application
-            guides for every state and business type — in one place.
+            Median wages, percentile ranges, and employment statistics
+            for 800+ occupations across all 50 states — drawn directly
+            from the Bureau of Labor Statistics.
           </p>
           <div class="hero-actions">
             <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
-            <a href="/licenses/" class="btn btn-outline btn-lg">Browse by License Type</a>
+            <a href="#occupations" class="btn btn-outline btn-lg">Browse by Occupation</a>
           </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-num">{states.length}</span>
-            <span class="stat-label">States</span>
+        <div class="hero-stat-card">
+          <div class="hsc-row">
+            <span class="hsc-num">800+</span>
+            <span class="hsc-label">Occupations covered</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-num">{businessTypes.length}+</span>
-            <span class="stat-label">Business Types</span>
+          <div class="hsc-divider"></div>
+          <div class="hsc-row">
+            <span class="hsc-num">51</span>
+            <span class="hsc-label">States + DC</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-num">Free</span>
-            <span class="stat-label">Always</span>
+          <div class="hsc-divider"></div>
+          <div class="hsc-row">
+            <span class="hsc-num">BLS</span>
+            <span class="hsc-label">Official U.S. government data</span>
+          </div>
+          <div class="hsc-divider"></div>
+          <div class="hsc-row">
+            <span class="hsc-num">Free</span>
+            <span class="hsc-label">No account required</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- How It Works strip -->
-  <section class="how-strip">
+  <!-- What you get strip -->
+  <div class="feature-strip">
     <div class="container">
-      <ol class="how-list">
-        <li>
-          <span class="how-num">01</span>
-          <div>
-            <strong>Pick your state</strong>
-            <p>Select where your business will operate.</p>
-          </div>
-        </li>
-        <li>
-          <span class="how-num">02</span>
-          <div>
-            <strong>Choose your business type</strong>
-            <p>Find your specific license category.</p>
-          </div>
-        </li>
-        <li>
-          <span class="how-num">03</span>
-          <div>
-            <strong>Follow the steps</strong>
-            <p>Use our guide with direct links to official agencies.</p>
-          </div>
-        </li>
-      </ol>
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="fi-icon">📊</span>
+          <div><strong>Full percentile breakdown</strong><p>10th, 25th, median, 75th, and 90th percentile wages — hourly and annual.</p></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🗺️</span>
+          <div><strong>State-by-state comparison</strong><p>See how any occupation's pay varies across every state.</p></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📅</span>
+          <div><strong>Annual BLS updates</strong><p>Data updated each year when BLS releases new OEWS figures.</p></div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 
   <main>
     <div class="container">
 
       <!-- States -->
-      <StateList />
-
-      <!-- Business Types -->
-      <section id="business-types" class="section">
+      <section id="states" class="section">
         <div class="section-heading">
-          <h2>Browse by License Type</h2>
-          <span class="section-count">{businessTypes.length} types</span>
+          <h2>Browse by State</h2>
+          <span class="section-count">{indexData.states.length} states</span>
         </div>
-        <div class="biz-type-grid">
-          {businessTypes.map((bt) => (
-            <a href={`/licenses/${bt.slug}/`} class="biz-type-card">
-              <div class="biz-type-name">{bt.name}</div>
-              <div class="biz-type-desc">{bt.description}</div>
-              <span class="biz-type-cta">All states →</span>
+        <div class="state-grid">
+          {indexData.states.map((s) => {
+            const hasData = liveSlugs.has(s.slug);
+            return (
+              <a
+                href={hasData ? `/salaries/${s.slug}/` : undefined}
+                class={`state-card ${!hasData ? 'state-card--coming' : ''}`}
+                aria-disabled={!hasData ? 'true' : undefined}
+              >
+                <span class="state-abbr">{s.abbreviation}</span>
+                <span class="state-name">{s.name}</span>
+                {!hasData && <span class="state-soon">Soon</span>}
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Occupations -->
+      <section id="occupations" class="section">
+        <div class="section-heading">
+          <h2>Browse by Occupation</h2>
+          <span class="section-count">{indexData.occupations.length} listed</span>
+        </div>
+        <div class="occ-grid">
+          {indexData.occupations.map((occ) => (
+            <a href={`/salaries/${occ.slug}/`} class="occ-card">
+              <div class="occ-title">{occ.title}</div>
+              <div class="occ-code">SOC {occ.socCode}</div>
             </a>
           ))}
         </div>
       </section>
 
       <div class="alert alert-info">
-        <strong>Note:</strong> Requirements vary by state, county, and city.
-        Always confirm details with the official issuing agency before applying.
+        <strong>Source:</strong> All data is from the U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics (OEWS) program, May 2024. Data is updated annually.
       </div>
 
     </div>
@@ -121,125 +139,62 @@ const jsonLd = {
   .hero {
     background: var(--bg-inset);
     border-bottom: 1px solid var(--border);
-    padding: 4rem 0 3rem;
+    padding: 4.5rem 0 3.5rem;
   }
 
   .hero-inner {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 3rem;
-    align-items: end;
+    align-items: center;
   }
 
-  .hero-text .eyebrow { margin-bottom: 0.85rem; }
+  .hero-text h1 { margin-bottom: 0.85rem; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.08; }
+  .hero-lead { font-size: 1.05rem; color: var(--text-muted); max-width: 480px; margin-bottom: 1.75rem; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
-  .hero-text h1 {
-    margin-bottom: 0.85rem;
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    line-height: 1.1;
-  }
-
-  .hero-lead {
-    font-size: 1.05rem;
-    color: var(--text-muted);
-    max-width: 500px;
-    margin-bottom: 1.75rem;
-    line-height: 1.7;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .hero-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  .hero-stat-card {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--white);
     overflow: hidden;
-    min-width: 160px;
+    min-width: 200px;
     flex-shrink: 0;
-    align-self: start;
   }
+  .hsc-row { padding: 1rem 1.4rem; }
+  .hsc-num { display: block; font-family: var(--font-serif); font-size: 1.9rem; font-weight: 600; color: var(--primary); line-height: 1; margin-bottom: 0.15rem; }
+  .hsc-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-faint); font-weight: 500; }
+  .hsc-divider { height: 1px; background: var(--border); }
 
-  .stat-item {
-    padding: 1.1rem 1.4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-  }
+  /* Feature strip */
+  .feature-strip { background: var(--white); border-bottom: 1px solid var(--border); padding: 1.75rem 0; }
+  .feature-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .feature-item { display: flex; align-items: flex-start; gap: 0.85rem; }
+  .fi-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .feature-item strong { display: block; font-size: 0.875rem; margin-bottom: 0.2rem; }
+  .feature-item p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.55; }
 
-  .stat-num {
-    font-family: var(--font-serif);
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--primary);
-    line-height: 1;
-  }
+  /* State grid – extend with coming-soon */
+  .state-card--coming { opacity: 0.5; cursor: default; pointer-events: none; }
+  .state-soon { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); margin-left: auto; }
 
-  .stat-label {
-    font-size: 0.72rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-faint);
-  }
-
-  .stat-divider {
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* How strip */
-  .how-strip {
+  /* Occupation grid */
+  .occ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+  .occ-card {
     background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.12s;
   }
+  .occ-card:hover { border-color: var(--primary); }
+  .occ-title { font-weight: 500; font-size: 0.875rem; color: var(--primary); margin-bottom: 0.15rem; }
+  .occ-code { font-size: 0.72rem; color: var(--text-faint); font-family: var(--font-mono, monospace); }
 
-  .how-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 0;
-  }
-
-  .how-list li {
-    flex: 1;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.85rem;
-    padding: 0.75rem 1.5rem 0.75rem 0;
-    margin: 0;
-    border-right: 1px solid var(--border);
-  }
-  .how-list li:last-child { border-right: none; padding-right: 0; }
-  .how-list li:first-child { padding-left: 0; }
-
-  .how-num {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--border-dark);
-    line-height: 1;
-    flex-shrink: 0;
-    margin-top: 0.05rem;
-  }
-
-  .how-list strong { display: block; font-size: 0.875rem; margin-bottom: 0.15rem; }
-  .how-list p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
-
-  @media (max-width: 768px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 1.75rem; }
-    .hero-stats { flex-direction: row; min-width: auto; }
-    .stat-divider { width: 1px; height: auto; }
-    .how-list { flex-direction: column; gap: 0.75rem; }
-    .how-list li { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 0.75rem; }
-    .how-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .feature-list { grid-template-columns: 1fr; gap: 1.25rem; }
   }
 </style>

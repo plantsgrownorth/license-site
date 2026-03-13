@@ -1,10 +1,10 @@
 /* ===== Design System ===== */
 :root {
-  --bg:            #f7f5f0;
-  --bg-alt:        #efede7;
-  --bg-inset:      #e8e5de;
-  --border:        #d9d4ca;
-  --border-dark:   #b8b2a7;
+  --bg:            #f6f7f5;
+  --bg-alt:        #eef0ec;
+  --bg-inset:      #e5e8e3;
+  --border:        #d4d9d0;
+  --border-dark:   #adb5a8;
   --text:          #1a1917;
   --text-muted:    #6b6560;
   --text-faint:    #9b958e;
@@ -16,8 +16,9 @@
   --white:         #ffffff;
   --header-bg:     #1a1917;
 
-  --font-serif:  'Fraunces', Georgia, serif;
-  --font-sans:   'DM Sans', system-ui, sans-serif;
+  --font-serif:  'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  --font-sans:   'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:   'IBM Plex Mono', 'Courier New', monospace;
 
   --radius:    4px;
   --radius-lg: 8px;
@@ -342,50 +343,7 @@ main { flex: 1; padding: 3rem 0 5rem; }
 
 .state-name { font-size: 0.85rem; font-weight: 400; color: var(--text); }
 
-/* ===== Business Type Grid ===== */
-.biz-type-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 0.75rem;
-}
-
-.biz-type-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.1rem 1.2rem;
-  text-decoration: none;
-  display: block;
-  transition: border-color 0.12s;
-}
-.biz-type-card:hover { border-color: var(--primary); }
-
-.biz-type-name { font-weight: 600; color: var(--primary); margin-bottom: 0.3rem; font-size: 0.9rem; }
-.biz-type-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
-.biz-type-cta { display: inline-block; margin-top: 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--primary); }
-
-/* ===== License Card ===== */
-.license-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 0.75rem;
-}
-
-.license-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.1rem 1.2rem;
-  text-decoration: none;
-  display: block;
-  transition: border-color 0.12s;
-}
-.license-card:hover { border-color: var(--primary); }
-
-.license-card-title { font-weight: 600; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.3rem; }
-.license-card-agency { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem; }
-.license-card-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-
+/* ===== Tags ===== */
 .tag {
   background: var(--bg-alt);
   border: 1px solid var(--border);
@@ -614,8 +572,7 @@ textarea { min-height: 130px; resize: vertical; }
   .site-header .container { flex-wrap: wrap; }
   .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .state-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  .biz-type-grid { grid-template-columns: 1fr; }
-  .license-list { grid-template-columns: 1fr; }
+  .occ-grid { grid-template-columns: 1fr; }
   main { padding: 2rem 0 3.5rem; }
   .page-hero { padding: 2rem 0 1.75rem; }
 }

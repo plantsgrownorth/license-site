@@ -2,22 +2,23 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer" role="contentinfo">
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="footer-logo">Business License Guide</a>
+        <a href="/" class="footer-logo">BLS Salary Guide</a>
         <p>
-          A free reference for entrepreneurs navigating U.S. business licensing.
-          We compile official requirements so you can focus on building — not searching.
+          Free salary data for 800+ occupations across all 50 states, sourced
+          from the U.S. Bureau of Labor Statistics Occupational Employment and
+          Wage Statistics (OEWS) program.
         </p>
       </div>
 
       <div class="footer-col">
         <h4>Browse</h4>
         <ul>
-          <li><a href="/#states">By State</a></li>
-          <li><a href="/licenses/">By License Type</a></li>
+          <li><a href="/#states">Salaries by State</a></li>
+          <li><a href="/#occupations">Salaries by Occupation</a></li>
         </ul>
       </div>
 
@@ -31,8 +32,8 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer-bottom">
-      <span>&copy; {year} Business License Guide</span>
-      <span>For informational use only — verify all requirements with official agencies.</span>
+      <p>&copy; {year} BLS Salary Guide. Not affiliated with the U.S. Bureau of Labor Statistics.</p>
+      <p>Data: <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS</a> May 2024</p>
     </div>
   </div>
 </footer>

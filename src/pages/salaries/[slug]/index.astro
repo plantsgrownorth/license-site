@@ -1,0 +1,334 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const stateFiles  = import.meta.glob('../../../data/states/*.json',      { eager: true });
+  const occFiles    = import.meta.glob('../../../data/occupations/*.json', { eager: true });
+  const paths: any[] = [];
+
+  for (const mod of Object.values(stateFiles)) {
+    const d = (mod as any).default;
+    paths.push({ params: { slug: d.stateSlug }, props: { type: 'state', data: d } });
+  }
+  for (const mod of Object.values(occFiles)) {
+    const d = (mod as any).default;
+    paths.push({ params: { slug: d.slug }, props: { type: 'occupation', data: d } });
+  }
+  return paths;
+}
+
+// ── helpers ────────────────────────────────────────────────────────────────────
+function fmt(n: number | null | undefined) {
+  if (n == null) return 'N/A';
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+}
+function fmtNum(n: number | null | undefined) {
+  if (n == null) return 'N/A';
+  return new Intl.NumberFormat('en-US').format(n);
+}
+function pctDiff(val: number, ref: number) {
+  const d = Math.round(((val - ref) / ref) * 100);
+  return d >= 0 ? `+${d}%` : `${d}%`;
+}
+
+const { type, data } = Astro.props;
+
+// ── STATE HUB ─────────────────────────────────────────────────────────────────
+let title = '', description = '', jsonLd: any;
+
+if (type === 'state') {
+  const occs = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
+  const top5  = occs.slice(0, 5).map((o: any) => o.title).join(', ');
+  title       = `Average Salaries in ${data.state} by Occupation (${data.dataYear})`;
+  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Includes ${top5} and more — sourced from BLS OEWS ${data.dataYear} data.`;
+  jsonLd      = { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://businesslicenseguide.com/salaries/${data.stateSlug}/` };
+} else {
+  const topStates = [...data.states].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0)).slice(0, 3).map((s: any) => s.state).join(', ');
+  title       = `${data.title} Salary by State — ${data.dataYear} BLS Data`;
+  description = `${data.title} median salary: ${fmt(data.national?.medianAnnual)} nationally. Highest-paying states: ${topStates}. Full state-by-state breakdown from BLS OEWS ${data.dataYear}.`;
+  jsonLd      = [
+    { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description },
+    { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: [
+      { '@type':'Question', name:`What is the average ${data.title} salary?`, acceptedAnswer:{ '@type':'Answer', text:`The national median ${data.title} salary is ${fmt(data.national?.medianAnnual)} per year, with a mean of ${fmt(data.national?.meanAnnual)}, based on BLS OEWS ${data.dataYear} data.` } },
+      { '@type':'Question', name:`Which state pays ${data.title}s the most?`, acceptedAnswer:{ '@type':'Answer', text:`${[...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.state} has the highest median ${data.title} salary at ${fmt([...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.medianAnnual)} per year.` } },
+    ] }
+  ];
+}
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  {type === 'state' ? (
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Salaries by State', href: '/#states' }, { label: data.state }]} />
+  ) : (
+    <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Occupations', href: '/#occupations' }, { label: data.title }]} />
+  )}
+
+  <div class="page-hero">
+    <div class="container">
+      {type === 'state' ? (
+        <>
+          <span class="eyebrow">{data.stateAbbreviation} · BLS OEWS {data.dataYear}</span>
+          <h1>Salaries in {data.state}</h1>
+          <p>Median wages for {data.occupations.length} occupations. Click any row to see the full salary breakdown.</p>
+          <div class="page-hero-meta">
+            <span class="badge">{data.occupations.length} occupations</span>
+            <span class="badge">BLS {data.dataYear} data</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <span class="eyebrow">BLS OEWS {data.dataYear} · SOC {data.socCode}</span>
+          <h1>{data.title} Salary by State</h1>
+          <p>National median: <strong>{fmt(data.national?.medianAnnual)}/yr</strong> · {fmtNum(data.national?.totalEmployment)} employed nationally</p>
+          <div class="page-hero-meta">
+            <span class="badge">{data.states.length} states</span>
+            {data.typicalEducation && <span class="badge">{data.typicalEducation}</span>}
+            {data.jobOutlookLabel && <span class="badge">{data.jobOutlookPercent}% growth · {data.jobOutlookLabel}</span>}
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+
+      {/* ── STATE HUB ── */}
+      {type === 'state' && (() => {
+        const sorted = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
+        return (
+          <div class="hub-layout">
+            <div class="hub-main">
+              <div class="section-heading"><h2>All Occupations</h2><span class="section-count">{sorted.length} listed</span></div>
+              <div class="table-wrap">
+                <table class="data-table sortable">
+                  <thead>
+                    <tr>
+                      <th>Occupation</th>
+                      <th class="num-col">Median Annual</th>
+                      <th class="num-col">Mean Annual</th>
+                      <th class="num-col">Employment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map((occ: any) => (
+                      <tr>
+                        <td><a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a></td>
+                        <td class="num-col salary-cell">{fmt(occ.medianAnnual)}</td>
+                        <td class="num-col">{fmt(occ.meanAnnual)}</td>
+                        <td class="num-col">{fmtNum(occ.totalEmployment)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <aside class="hub-sidebar">
+              <div class="info-block">
+                <h3>Top 5 Highest Paying</h3>
+                <ol class="sidebar-list">
+                  {sorted.slice(0, 5).map((occ: any) => (
+                    <li>
+                      <a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a>
+                      <span class="sidebar-salary">{fmt(occ.medianAnnual)}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div class="info-block">
+                <h3>Data Source</h3>
+                <p class="source-note">U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics (OEWS), May {data.dataYear}. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a></p>
+              </div>
+            </aside>
+          </div>
+        );
+      })()}
+
+      {/* ── OCCUPATION HUB ── */}
+      {type === 'occupation' && (() => {
+        const sorted = [...data.states].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
+        const natMedian = data.national?.medianAnnual ?? 0;
+        return (
+          <div class="hub-layout">
+            <div class="hub-main">
+              {data.national && (
+                <div class="nat-stats">
+                  <div class="nat-stat"><span class="nat-val">{fmt(data.national.medianAnnual)}</span><span class="nat-label">National Median</span></div>
+                  <div class="nat-stat"><span class="nat-val">{fmt(data.national.meanAnnual)}</span><span class="nat-label">National Mean</span></div>
+                  <div class="nat-stat"><span class="nat-val">{fmtNum(data.national.totalEmployment)}</span><span class="nat-label">Total Employed</span></div>
+                  <div class="nat-stat"><span class="nat-val">{fmt(data.national.pct10Annual)} – {fmt(data.national.pct90Annual)}</span><span class="nat-label">10th–90th Percentile</span></div>
+                </div>
+              )}
+
+              <div class="section-heading"><h2>Salary by State</h2><span class="section-count">{sorted.length} states</span></div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>State</th>
+                      <th class="num-col">Median Annual</th>
+                      <th class="num-col">vs. National</th>
+                      <th class="num-col">Employment</th>
+                      <th class="num-col">Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map((s: any) => {
+                      const diff = natMedian > 0 ? pctDiff(s.medianAnnual, natMedian) : null;
+                      const isPos = diff && diff.startsWith('+');
+                      return (
+                        <tr>
+                          <td><a href={`/salaries/${s.stateSlug}/`}>{s.state}</a></td>
+                          <td class="num-col salary-cell">{fmt(s.medianAnnual)}</td>
+                          <td class="num-col"><span class={`pct-badge ${isPos ? 'pos' : 'neg'}`}>{diff}</span></td>
+                          <td class="num-col">{fmtNum(s.totalEmployment)}</td>
+                          <td class="num-col"><a href={`/salaries/${s.stateSlug}/${data.slug}/`} class="row-link">View →</a></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <aside class="hub-sidebar">
+              {data.typicalEducation && (
+                <div class="info-block">
+                  <h3>Education & Training</h3>
+                  <div class="info-row"><div class="info-icon">🎓</div><div><div class="info-label">Typical Education</div><div class="info-value">{data.typicalEducation}</div></div></div>
+                  {data.workExperience && data.workExperience !== 'None' && <div class="info-row"><div class="info-icon">💼</div><div><div class="info-label">Work Experience</div><div class="info-value">{data.workExperience}</div></div></div>}
+                  {data.onJobTraining && data.onJobTraining !== 'None' && <div class="info-row"><div class="info-icon">🔧</div><div><div class="info-label">On-the-Job Training</div><div class="info-value">{data.onJobTraining}</div></div></div>}
+                  {data.jobOutlookPercent != null && <div class="info-row"><div class="info-icon">📈</div><div><div class="info-label">10-Year Job Growth</div><div class="info-value">{data.jobOutlookPercent}% · {data.jobOutlookLabel}</div></div></div>}
+                </div>
+              )}
+              <div class="info-block">
+                <h3>Top 5 States by Pay</h3>
+                <ol class="sidebar-list">
+                  {sorted.slice(0, 5).map((s: any) => (
+                    <li>
+                      <a href={`/salaries/${s.stateSlug}/${data.slug}/`}>{s.state}</a>
+                      <span class="sidebar-salary">{fmt(s.medianAnnual)}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div class="info-block">
+                <h3>Data Source</h3>
+                <p class="source-note">U.S. Bureau of Labor Statistics, OEWS May {data.dataYear}. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a></p>
+              </div>
+            </aside>
+          </div>
+        );
+      })()}
+
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .hub-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 2rem;
+    align-items: start;
+    padding-top: 2rem;
+  }
+
+  .hub-sidebar { position: sticky; top: calc(58px + 1rem); }
+
+  /* National stats strip */
+  .nat-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .nat-stat {
+    padding: 1.1rem 1.2rem;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .nat-stat:last-child { border-right: none; }
+
+  .nat-val {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+  .nat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-faint);
+    font-weight: 500;
+  }
+
+  /* Table enhancements */
+  .num-col { text-align: right; }
+  .salary-cell { font-weight: 600; color: var(--primary); }
+
+  .pct-badge {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .pct-badge.pos { background: #dcfce7; color: #166534; }
+  .pct-badge.neg { background: #fee2e2; color: #991b1b; }
+
+  .row-link { font-size: 0.82rem; font-weight: 600; color: var(--primary); text-decoration: none; }
+  .row-link:hover { text-decoration: underline; }
+
+  /* Sidebar */
+  .sidebar-list { list-style: none; padding: 0; margin: 0; counter-reset: rank; }
+  .sidebar-list li {
+    counter-increment: rank;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .sidebar-list li:last-child { border-bottom: none; }
+  .sidebar-list li::before {
+    content: counter(rank);
+    flex-shrink: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    background: var(--bg-alt);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-faint);
+  }
+  .sidebar-list a { color: var(--primary); text-decoration: none; flex: 1; }
+  .sidebar-list a:hover { text-decoration: underline; }
+  .sidebar-salary { font-weight: 600; font-size: 0.8rem; color: var(--text); white-space: nowrap; }
+
+  .source-note { font-size: 0.78rem; color: var(--text-faint); line-height: 1.55; margin: 0; }
+
+  @media (max-width: 900px) {
+    .hub-layout { grid-template-columns: 1fr; }
+    .hub-sidebar { position: static; }
+    .nat-stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nat-stats { grid-template-columns: 1fr 1fr; }
+    .nat-stat { border-bottom: 1px solid var(--border); }
+  }
+</style>
