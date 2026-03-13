@@ -1,13 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StateList from '../components/StateList.astro';
-import BusinessTypeList from '../components/BusinessTypeList.astro';
 import businessTypes from '../data/business-types.json';
 import states from '../data/states.json';
 
-const title = 'Business License Requirements by State (2026) - Business License Guide';
+const title = 'Business License Requirements by State — 2026 Guide';
 const description =
-  'Find business licensing requirements for all 50 states. Fees, documents, agencies, and step-by-step application guides for every business type.';
+  'Find business licensing requirements for all 50 states. Fees, required documents, issuing agencies, and step-by-step application guides for every business type.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -15,227 +14,232 @@ const jsonLd = {
   name: 'Business License Guide',
   url: 'https://businesslicenseguide.com',
   description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://businesslicenseguide.com/?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
 };
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
+
   <!-- Hero -->
-  <section class="home-hero">
+  <section class="hero">
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">Free Resource · Updated 2026</div>
-        <h1>Business License Requirements<br /><span>Across All 50 States</span></h1>
-        <p class="hero-lead">
-          Starting a business? Find the exact licenses, permits, fees, and step-by-step
-          application instructions for your business type in any U.S. state — all in one place.
-        </p>
-        <div class="hero-actions">
-          <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
-          <a href="#business-types" class="btn btn-outline btn-lg">Browse by Business Type</a>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="eyebrow">Free · Updated 2026 · All 50 States</span>
+          <h1>The U.S. Business<br/>License Reference</h1>
+          <p class="hero-lead">
+            Official licensing requirements, fees, and step-by-step application
+            guides for every state and business type — in one place.
+          </p>
+          <div class="hero-actions">
+            <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
+            <a href="/licenses/" class="btn btn-outline btn-lg">Browse by License Type</a>
+          </div>
         </div>
         <div class="hero-stats">
-          <div class="stat">
-            <span class="stat-number">{states.length}</span>
-            <span class="stat-label">States Covered</span>
+          <div class="stat-item">
+            <span class="stat-num">{states.length}</span>
+            <span class="stat-label">States</span>
           </div>
-          <div class="stat">
-            <span class="stat-number">{businessTypes.length}+</span>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">{businessTypes.length}+</span>
             <span class="stat-label">Business Types</span>
           </div>
-          <div class="stat">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Free to Use</span>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">Free</span>
+            <span class="stat-label">Always</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- How It Works -->
-  <section class="how-it-works">
+  <!-- How It Works strip -->
+  <section class="how-strip">
     <div class="container">
-      <h2 class="text-center">How to Use This Guide</h2>
-      <div class="steps-grid">
-        <div class="step-item">
-          <div class="step-num">1</div>
-          <h3>Choose Your State</h3>
-          <p>Select the state where you plan to operate your business from the list below.</p>
-        </div>
-        <div class="step-item">
-          <div class="step-num">2</div>
-          <h3>Pick Your Business Type</h3>
-          <p>Find your business category to see the specific licenses and permits required.</p>
-        </div>
-        <div class="step-item">
-          <div class="step-num">3</div>
-          <h3>Follow the Steps</h3>
-          <p>Use our step-by-step guide with direct links to official government websites.</p>
-        </div>
-      </div>
+      <ol class="how-list">
+        <li>
+          <span class="how-num">01</span>
+          <div>
+            <strong>Pick your state</strong>
+            <p>Select where your business will operate.</p>
+          </div>
+        </li>
+        <li>
+          <span class="how-num">02</span>
+          <div>
+            <strong>Choose your business type</strong>
+            <p>Find your specific license category.</p>
+          </div>
+        </li>
+        <li>
+          <span class="how-num">03</span>
+          <div>
+            <strong>Follow the steps</strong>
+            <p>Use our guide with direct links to official agencies.</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
   <main>
     <div class="container">
-      <!-- States Section -->
+
+      <!-- States -->
       <StateList />
 
-      <!-- Business Types Section -->
-      <BusinessTypeList heading="Browse by Business Type" />
+      <!-- Business Types -->
+      <section id="business-types" class="section">
+        <div class="section-heading">
+          <h2>Browse by License Type</h2>
+          <span class="section-count">{businessTypes.length} types</span>
+        </div>
+        <div class="biz-type-grid">
+          {businessTypes.map((bt) => (
+            <a href={`/licenses/${bt.slug}/`} class="biz-type-card">
+              <div class="biz-type-name">{bt.name}</div>
+              <div class="biz-type-desc">{bt.description}</div>
+              <span class="biz-type-cta">All states →</span>
+            </a>
+          ))}
+        </div>
+      </section>
 
-      <!-- Disclaimer note -->
-      <div class="alert alert-info" style="margin-top: 1rem;">
-        <strong>Note:</strong> Licensing requirements vary significantly by state, county, and city.
-        Always confirm details with the official agency before submitting applications or paying fees.
+      <div class="alert alert-info">
+        <strong>Note:</strong> Requirements vary by state, county, and city.
+        Always confirm details with the official issuing agency before applying.
       </div>
+
     </div>
   </main>
 </BaseLayout>
 
 <style>
-  .home-hero {
-    background: linear-gradient(135deg, #0f2d5e 0%, #1b4f9e 60%, #2563a8 100%);
-    color: #fff;
+  /* Hero */
+  .hero {
+    background: var(--bg-inset);
+    border-bottom: 1px solid var(--border);
     padding: 4rem 0 3rem;
   }
 
-  .hero-content {
-    max-width: 720px;
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: end;
   }
 
-  .hero-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 100px;
-    padding: 0.3rem 1rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    margin-bottom: 1.25rem;
-    color: rgba(255,255,255,0.95);
-  }
+  .hero-text .eyebrow { margin-bottom: 0.85rem; }
 
-  .home-hero h1 {
-    color: #fff;
-    font-size: clamp(1.9rem, 5vw, 3rem);
-    line-height: 1.15;
-    margin-bottom: 1rem;
-  }
-
-  .home-hero h1 span {
-    color: #93c5fd;
+  .hero-text h1 {
+    margin-bottom: 0.85rem;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.1;
   }
 
   .hero-lead {
-    font-size: clamp(1rem, 2vw, 1.15rem);
-    color: rgba(255,255,255,0.88);
-    max-width: 560px;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 500px;
     margin-bottom: 1.75rem;
     line-height: 1.7;
   }
 
   .hero-actions {
     display: flex;
-    gap: 0.85rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-actions .btn-outline {
-    border-color: rgba(255,255,255,0.6);
-    color: #fff;
-  }
-  .hero-actions .btn-outline:hover {
-    background: rgba(255,255,255,0.15);
   }
 
   .hero-stats {
     display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    overflow: hidden;
+    min-width: 160px;
+    flex-shrink: 0;
+    align-self: start;
   }
 
-  .stat {
+  .stat-item {
+    padding: 1.1rem 1.4rem;
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.1rem;
   }
 
-  .stat-number {
+  .stat-num {
+    font-family: var(--font-serif);
     font-size: 1.75rem;
-    font-weight: 800;
-    color: #fff;
+    font-weight: 600;
+    color: var(--primary);
     line-height: 1;
   }
 
   .stat-label {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.7);
+    font-size: 0.72rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
+    color: var(--text-faint);
   }
 
-  /* How it works */
-  .how-it-works {
-    background: var(--color-bg-alt);
-    padding: 3rem 0;
-    border-bottom: 1px solid var(--color-border);
+  .stat-divider {
+    height: 1px;
+    background: var(--border);
   }
 
-  .text-center { text-align: center; }
-
-  .how-it-works h2 {
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
+  /* How strip */
+  .how-strip {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
   }
 
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .step-item {
-    text-align: center;
-  }
-
-  .step-num {
-    width: 3rem;
-    height: 3rem;
-    background: var(--color-primary);
-    color: #fff;
-    border-radius: 50%;
+  .how-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 1.25rem;
-    margin: 0 auto 1rem;
+    gap: 0;
   }
 
-  .step-item h3 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
+  .how-list li {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.75rem 1.5rem 0.75rem 0;
+    margin: 0;
+    border-right: 1px solid var(--border);
+  }
+  .how-list li:last-child { border-right: none; padding-right: 0; }
+  .how-list li:first-child { padding-left: 0; }
+
+  .how-num {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--border-dark);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
   }
 
-  .step-item p {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    margin-bottom: 0;
-  }
+  .how-list strong { display: block; font-size: 0.875rem; margin-bottom: 0.15rem; }
+  .how-list p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
 
-  @media (max-width: 640px) {
-    .steps-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-    .hero-stats { gap: 1.25rem; }
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+    .hero-stats { flex-direction: row; min-width: auto; }
+    .stat-divider { width: 1px; height: auto; }
+    .how-list { flex-direction: column; gap: 0.75rem; }
+    .how-list li { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 0.75rem; }
+    .how-list li:last-child { border-bottom: none; padding-bottom: 0; }
   }
 </style>
