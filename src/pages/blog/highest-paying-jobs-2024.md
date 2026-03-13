@@ -1,24 +1,18 @@
 ---
 layout: ../../layouts/BlogLayout.astro
 title: "25 Highest Paying Jobs in America (2024 BLS Data)"
-description: "The 25 highest-paying occupations in the US ranked by median annual salary, based on May 2024 Bureau of Labor Statistics data. Includes education requirements and state-by-state variation."
+description: "The 25 highest-paying occupations in the US ranked by median annual salary, from official May 2024 BLS data. Includes real numbers, percentile ranges, and what the gaps actually mean."
 date: "2026-03-10"
 ---
 
-Every few months someone publishes a list of "highest paying jobs" and it's almost always the same problem: vague salary ranges, self-reported numbers, or data that's two years old. This one is different. Every figure below comes from the Bureau of Labor Statistics Occupational Employment and Wage Statistics survey, May 2024 — the same source hospitals, HR departments, and the federal government use for compensation benchmarking.
+Every few months someone publishes a "highest paying jobs" list and it's almost always the same problem: vague salary ranges, self-reported numbers, or data that's two years old and filed under "2024" anyway. This one is different. Every figure here comes from the Bureau of Labor Statistics Occupational Employment and Wage Statistics survey, May 2024 release.
 
-A few things worth knowing before you scroll:
+That's the same source hospitals, HR departments, and the federal government use. It's not perfect (I'll get into the limitations), but it's a lot harder to argue with than a Glassdoor scrape.
 
-- **Median** means the middle of the market. Half of people in this job earn more, half earn less. It's more useful than an average because a handful of extreme earners don't skew it.
-- These are **national figures**. Pay varies significantly by state. A surgeon in Mississippi earns considerably less than one in New York. Use the individual state pages on this site to get a more specific picture.
-- Some occupations below are broad categories. "Physicians and surgeons" covers many specialties, each with different pay ranges.
-
----
-
-## The 25 Highest-Paying Occupations
+## The list
 
 | Rank | Occupation | Median Annual Salary |
-|------|-----------|---------------------|
+|------|------------|---------------------|
 | 1 | Surgeons | $299,000+ |
 | 2 | Obstetricians and Gynecologists | $296,210 |
 | 3 | Oral and Maxillofacial Surgeons | $285,990 |
@@ -29,52 +23,54 @@ A few things worth knowing before you scroll:
 | 8 | Chief Executives | $206,680 |
 | 9 | Nurse Anesthetists | $203,090 |
 | 10 | Dentists (General) | $167,160 |
-| 11 | Petroleum Engineers | $145,720 |
-| 12 | Computer and Information Systems Managers | $169,510 |
+| 11 | Computer and Information Systems Managers | $169,510 |
+| 12 | Airline Pilots and Copilots | $171,210 |
 | 13 | Architectural and Engineering Managers | $165,370 |
-| 14 | Airline Pilots, Copilots, and Flight Engineers | $171,210 |
+| 14 | Petroleum Engineers | $145,720 |
 | 15 | Marketing Managers | $157,620 |
 | 16 | Financial Managers | $156,100 |
-| 17 | Lawyers | $145,760 |
-| 18 | Natural Sciences Managers | $156,110 |
-| 19 | Software Developers | $132,270 |
-| 20 | Pharmacists | $132,750 |
-| 21 | Physician Assistants | $126,010 |
-| 22 | Nurse Practitioners | $124,680 |
-| 23 | Sales Managers | $130,600 |
+| 17 | Natural Sciences Managers | $156,110 |
+| 18 | Lawyers | $145,760 |
+| 19 | Sales Managers | $130,600 |
+| 20 | Software Developers | $132,270 |
+| 21 | Pharmacists | $132,750 |
+| 22 | Physician Assistants | $126,010 |
+| 23 | Nurse Practitioners | $124,680 |
 | 24 | Financial Analysts | $99,890 |
 | 25 | Registered Nurses | $86,070 |
 
----
-
 ## What's actually driving these numbers
 
-The top of this list is almost entirely medicine. That's not surprising — medical training is long (4 years undergrad, 4 years medical school, 3–7 years residency), licensing requirements are strict, and demand is consistent regardless of economic conditions. Surgeons don't get laid off in recessions.
+The top of this list is almost entirely medicine. That's not a surprise, but it's worth thinking about why. Medical training is genuinely long: four years of undergrad, four years of medical school, then three to seven years of residency before you're seeing patients independently. Surgeons don't get laid off in recessions. The demand is inelastic in ways that most other professions aren't, and the supply is constrained by the number of residency slots, which hasn't kept pace with population growth in decades.
 
-The non-medical entries in the top 10 — chief executives and nurse anesthetists — reflect a different dynamic. CEOs earn what boards of directors are willing to pay, which has little to do with BLS averages. Nurse anesthetists (CRNAs) are an interesting case: they're the only non-physician role that can administer anesthesia independently in many states, which gives them unusual negotiating power.
+Chief executives at rank 8 are a different story. CEOs earn what boards of directors decide to pay them, which has very little to do with what BLS surveys say the median is. The $206K median understates how skewed that distribution actually is; the 90th percentile for chief executives is well above that, and the people in the 90th percentile are skewing every stat you've ever seen about executive pay.
 
-**Software developers** sitting at #19 on a list of 800+ occupations is worth noting. A $132K national median sounds high, but it hides an enormous range. The 10th percentile for software developers is around $74K — that's an entry-level developer at a small company in a mid-sized city. The 90th percentile is north of $200K. Where you land depends heavily on location, employer size, and specialty.
+Nurse anesthetists (CRNAs) at rank 9 are the most interesting entry on the list, in my opinion. They're the only non-physician role that can administer anesthesia independently in most states, which gives them negotiating power that's genuinely unusual for a non-MD. $203K is real money that a lot of physicians don't make, and it requires a fraction of the training.
 
-**Registered nurses** at the bottom of this list — $86K nationally — also have some of the widest geographic variation of any profession. California pays RNs a median of $125,760. Mississippi pays $63,480. Same job, same license requirements, 98% difference in pay. If you're a nurse and you're not thinking about geography when you're thinking about salary, you're leaving money on the table.
+## The location thing people ignore
 
----
+[Software developers](/salaries/software-developers/) sitting at $132K nationally sounds like a lot. And it is. But that national median is almost useless for decision-making because the range is enormous.
 
-## The education reality
+A software developer in Mississippi earns around $85K median. One in California earns around $165K. Same job title, same BLS code. Geography is doing most of the work in that $80K gap, not skill level or company size (though those matter too). If you're a developer thinking about where to live, or you're negotiating an offer, the state-level data is what you actually want. The national number is just a starting point.
 
-Every occupation in the top 10 requires either a doctoral degree (medicine, dentistry) or extensive professional experience with a graduate degree (chief executives). That's the tradeoff that doesn't show up in salary lists: the income is real, but so is the decade of training and the debt that comes with it.
+This applies to basically everything on the list. [Registered nurses](/salaries/registered-nurses/) at the bottom earn $86K nationally, which includes California's $125K median and Mississippi's $63K median in the same average. Those two states describe completely different jobs in terms of purchasing power and lifestyle, and lumping them together in a national figure hides that almost entirely.
 
-The better question for most people isn't "what's the highest paying job" — it's "what's the highest paying job I can realistically get to in the next 5 years given my starting point." That's a different calculation, and it depends heavily on where you live and what you already know.
+## What this list doesn't tell you
 
----
+BLS data is a snapshot. May 2024 reflects employer surveys from late 2023 and early 2024. If you're in a field that shifted a lot since then (AI-adjacent roles, for instance), treat these numbers as a baseline and check recent job postings to see where the market actually is right now.
 
-## State-level salary data
+The other thing worth saying: median doesn't tell you where you'd land. A newly licensed pharmacist at a retail chain and a senior clinical pharmacist at a hospital system both show up in the $132K median. The 10th percentile for pharmacists is around $91K, the 90th is around $162K. Knowing which end of that range applies to you matters more than knowing the median.
 
-The national medians above are starting points. If you want to see what a specific occupation pays in your state:
+## State-by-state breakdowns
+
+If you want to see what any of these occupations actually pays where you live:
 
 - [Registered Nurse salary by state](/salaries/registered-nurses/)
 - [Software Developer salary by state](/salaries/software-developers/)
 - [Physician Assistant salary by state](/salaries/physician-assistants/)
 - [Financial Analyst salary by state](/salaries/financial-analysts/)
 - [Marketing Manager salary by state](/salaries/marketing-managers/)
+- [Nurse Practitioner salary by state](/salaries/nurse-practitioners/)
+- [Pharmacist salary by state](/salaries/pharmacists/)
 
-Or browse the full list by [state](//#states) or [occupation](//#occupations).
+Or pick your state from the [homepage](/) and see what every occupation pays there.

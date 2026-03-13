@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const title = 'About StateWages — Why This Site Exists';
-const description = 'StateWages was built out of frustration with salary sites that hide real data behind paywalls and surveys. Here\'s the story behind it and how the data works.';
+const title = 'About StateWages';
+const description = "StateWages exists because every other salary site is either paywalled, self-reported, or both. Here's what we actually use and why it's different.";
 ---
 
 <BaseLayout title={title} description={description}>
@@ -20,91 +20,100 @@ const description = 'StateWages was built out of frustration with salary sites t
         <div class="about-body">
 
           <p class="lead">
-            A few years ago I was trying to figure out whether to take a job offer in another state.
-            The salary seemed good, but I had no clean way to tell if it was actually good <em>for that market</em>.
+            About three years ago I spent an entire weekend trying to figure out if a job offer was worth taking.
+            It was in a different state. The salary looked fine on paper, but I had no way to tell if it was fine
+            <em>for that market.</em>
           </p>
 
           <p>
-            I spent an embarrassing amount of time on Glassdoor, Indeed, and Payscale — and every single one
-            of them either hid the real numbers behind a login, showed me "estimated" ranges based on
-            self-reported surveys from 12 people, or pushed me toward some premium subscription to
-            see anything useful. The BLS website had the actual government data I needed, but navigating
-            it felt like reading a tax form. Rows of spreadsheet. No context. No comparison.
+            So I did what most people do: opened Glassdoor, then Payscale, then Indeed, then LinkedIn Salary,
+            then back to Glassdoor because maybe I'd missed something. An hour in I had five ranges that didn't
+            agree with each other, half behind some signup wall, and none of them could tell me where in the
+            distribution I'd actually land. Frustrating in a way that feels disproportionate to how simple the
+            question is.
           </p>
 
           <p>
-            The data I wanted was public. The federal government collects it every year, for free,
-            for every occupation in every state. It was just buried.
+            Here's the thing nobody really says out loud: most of that data is self-reported. Companies tell
+            Glassdoor what they want to tell them. Employees type in whatever number feels right. There's no
+            auditing, no consistent methodology, and honestly no good reason to think that 47 responses for
+            "marketing manager in Denver" tells you much about the actual market. It might. It might not.
+            You can't tell.
           </p>
 
           <p>
-            So I built StateWages to fix that for myself — and figured other people probably run into
-            the same wall.
+            The Bureau of Labor Statistics surveys about 1.1 million employers every year. Mandatory participation.
+            Consistent methodology going back to 1988. They publish the whole dataset for free, covering 800-plus
+            occupations across every state. I found it after about two hours of digging through bls.gov (not
+            a great website, for the record). The data was all there, just buried in Excel files with column names
+            like A_PCT25 and H_MEDIAN that require cross-referencing a 40-page data dictionary to make sense of.
           </p>
 
-          <h2>Where the data comes from</h2>
+          <p>So I built StateWages. That's the whole story.</p>
+
+          <h2>What the data actually is</h2>
 
           <p>
-            Every number on this site comes directly from the U.S. Bureau of Labor Statistics
-            Occupational Employment and Wage Statistics (OEWS) program. BLS surveys roughly
-            1.1 million businesses every year, covering 800+ occupations across all 50 states
-            plus DC. The May 2024 data (the most recent release) is what powers this site right now.
-          </p>
-
-          <p>
-            I download the raw data file from bls.gov, run it through a processing script, and
-            generate a page for every occupation-state combination that has enough data to report.
-            When BLS releases new data each May, I update the site within a few days. That's it.
-            No surveys. No estimates. No employer-submitted numbers that may or may not reflect reality.
+            Every number on this site comes from the BLS Occupational Employment and Wage Statistics program,
+            May 2024 release. That's the most recent data available right now. The next release (May 2025 data)
+            is scheduled for sometime in spring 2026, and I'll update the site within a few days of that coming out.
           </p>
 
           <p>
-            The tradeoff is that BLS data is a snapshot — it reflects conditions from the survey period,
-            not today's job market. And BLS suppresses data when the sample size for a given occupation
-            in a given state is too small to report reliably, which is why some pages show "N/A" for
-            certain percentiles. That's not a bug. That's the data telling you it doesn't have enough
-            observations to give you a number worth trusting.
-          </p>
-
-          <h2>What the percentiles actually mean</h2>
-
-          <p>
-            A lot of people look at the "median" and stop there. The percentile breakdown is more
-            useful than most people realize:
-          </p>
-
-          <ul>
-            <li><strong>10th percentile</strong> — what someone just starting out, or working in a low-paying market, typically earns</li>
-            <li><strong>25th percentile</strong> — early-career or smaller employer range</li>
-            <li><strong>Median (50th)</strong> — the middle of the market. Half earn more, half earn less.</li>
-            <li><strong>75th percentile</strong> — experienced workers, larger employers, higher-cost areas</li>
-            <li><strong>90th percentile</strong> — top of the market. Senior roles, specialized skills, major metros.</li>
-          </ul>
-
-          <p>
-            When you're negotiating a salary, knowing where a number falls in that range matters
-            a lot more than knowing the average.
-          </p>
-
-          <h2>What this site is not</h2>
-
-          <p>
-            This is not a job board. I'm not trying to sell you a resume service or
-            connect you with recruiters. There are no surveys to fill out, no accounts to create,
-            and no premium tiers. The data is public and the site is free because there's no
-            reason it shouldn't be.
+            I download the raw file from bls.gov, run it through a processing script, and generate a page for every
+            occupation-state combination that has enough observations to report. When the sample size for a
+            particular job in a particular state is too small, BLS suppresses the data and I show "N/A." That's not a
+            bug. That's the data telling you there aren't enough observations to give you a number worth trusting,
+            and I'd rather show nothing than show something misleading.
           </p>
 
           <p>
-            The site runs display ads to cover hosting costs and my time. That's the whole business model.
+            The tradeoff (and I want to be straight about this) is that BLS data is a snapshot. It reflects employer
+            survey responses from late 2023 and early 2024. Job markets move. If you're in a field that changed
+            a lot in the last year, treat these numbers as a floor, not a ceiling, and check recent job postings too.
+          </p>
+
+          <h2>How to actually read a percentile</h2>
+
+          <p>
+            Most people see the median and stop. The percentile table is way more useful than that, and I think
+            it's worth explaining what those numbers mean in plain terms.
+          </p>
+
+          <p>
+            The 10th percentile is roughly what someone just starting out earns, or what the job pays in a low-cost
+            area with a small employer. The 90th percentile is a senior person at a large employer in a high-cost city.
+            The median (50th percentile) is the middle of the market: half earn more, half earn less. When you're
+            looking at a job offer and you want to know if it's good, the relevant question isn't whether it's above
+            the median. It's where it falls relative to what someone with your experience level typically earns. That's
+            usually somewhere in the 25th to 75th range, and the specific number shifts a lot by location.
+          </p>
+
+          <p>
+            A registered nurse in California earns a median of about $125,000. In Mississippi it's around $63,000.
+            Same license. Same job title. Same BLS occupation code. The state is doing almost all the work there,
+            and that's a real thing worth knowing before you take a job or move.
+          </p>
+
+          <h2>What this site isn't</h2>
+
+          <p>
+            Not a job board. Not trying to sell you a resume service or connect you with recruiters (though I'd be
+            lying if I said I never thought about adding affiliate links to job boards). There are no accounts, no
+            surveys, no premium tiers. The data is public and the site is free because there's really no reason
+            it shouldn't be.
+          </p>
+
+          <p>
+            The site runs display ads. That's how it stays free and how I cover the time I put into it. I'd rather
+            be upfront about that than pretend it's purely altruistic.
           </p>
 
           <div class="about-note">
-            <strong>A note on accuracy:</strong> I cross-check the data against BLS's own published
-            tables periodically, but if you spot a number that looks wrong, the most likely explanation
-            is a data suppression issue or a rounding difference. The raw source is always
-            <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a> —
-            that's the ground truth.
+            <strong>If a number looks wrong:</strong> the most likely explanation is data suppression or a rounding
+            difference in how BLS reports certain fields. The raw source is always
+            <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a> and that's
+            the ground truth. If you find a genuine error in how I've processed the data, I want to know about it.
           </div>
 
         </div>
@@ -173,11 +182,11 @@ const description = 'StateWages was built out of frustration with salary sites t
     margin-bottom: 1.25rem;
   }
 
-  .about-body p { line-height: 1.75; margin-bottom: 1.1rem; }
+  .about-body p { line-height: 1.8; margin-bottom: 1.1rem; }
 
   .about-body h2 {
-    font-size: 1.25rem;
-    margin-top: 2rem;
+    font-size: 1.2rem;
+    margin-top: 2.25rem;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border);
@@ -193,7 +202,7 @@ const description = 'StateWages was built out of frustration with salary sites t
     padding: 1rem 1.1rem;
     font-size: 0.875rem;
     color: var(--primary-dark);
-    line-height: 1.65;
+    line-height: 1.7;
     margin-top: 2rem;
   }
 
