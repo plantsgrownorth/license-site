@@ -4,6 +4,7 @@ dist/
 .astro/
 # wrangler local files
 .wrangler/
+wrangler.jsonc
 
 # dependencies
 node_modules/
