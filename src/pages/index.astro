@@ -1,0 +1,241 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StateList from '../components/StateList.astro';
+import BusinessTypeList from '../components/BusinessTypeList.astro';
+import businessTypes from '../data/business-types.json';
+import states from '../data/states.json';
+
+const title = 'Business License Requirements by State (2026) - Business License Guide';
+const description =
+  'Find business licensing requirements for all 50 states. Fees, documents, agencies, and step-by-step application guides for every business type.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Business License Guide',
+  url: 'https://businesslicenseguide.com',
+  description,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://businesslicenseguide.com/?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <!-- Hero -->
+  <section class="home-hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">Free Resource · Updated 2026</div>
+        <h1>Business License Requirements<br /><span>Across All 50 States</span></h1>
+        <p class="hero-lead">
+          Starting a business? Find the exact licenses, permits, fees, and step-by-step
+          application instructions for your business type in any U.S. state — all in one place.
+        </p>
+        <div class="hero-actions">
+          <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
+          <a href="#business-types" class="btn btn-outline btn-lg">Browse by Business Type</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">{states.length}</span>
+            <span class="stat-label">States Covered</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">{businessTypes.length}+</span>
+            <span class="stat-label">Business Types</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Free to Use</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="text-center">How to Use This Guide</h2>
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <h3>Choose Your State</h3>
+          <p>Select the state where you plan to operate your business from the list below.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <h3>Pick Your Business Type</h3>
+          <p>Find your business category to see the specific licenses and permits required.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <h3>Follow the Steps</h3>
+          <p>Use our step-by-step guide with direct links to official government websites.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="container">
+      <!-- States Section -->
+      <StateList />
+
+      <!-- Business Types Section -->
+      <BusinessTypeList heading="Browse by Business Type" />
+
+      <!-- Disclaimer note -->
+      <div class="alert alert-info" style="margin-top: 1rem;">
+        <strong>Note:</strong> Licensing requirements vary significantly by state, county, and city.
+        Always confirm details with the official agency before submitting applications or paying fees.
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    background: linear-gradient(135deg, #0f2d5e 0%, #1b4f9e 60%, #2563a8 100%);
+    color: #fff;
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-content {
+    max-width: 720px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 100px;
+    padding: 0.3rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.25rem;
+    color: rgba(255,255,255,0.95);
+  }
+
+  .home-hero h1 {
+    color: #fff;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .home-hero h1 span {
+    color: #93c5fd;
+  }
+
+  .hero-lead {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(255,255,255,0.88);
+    max-width: 560px;
+    margin-bottom: 1.75rem;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-actions .btn-outline {
+    border-color: rgba(255,255,255,0.6);
+    color: #fff;
+  }
+  .hero-actions .btn-outline:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .stat-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* How it works */
+  .how-it-works {
+    background: var(--color-bg-alt);
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .text-center { text-align: center; }
+
+  .how-it-works h2 {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .step-item {
+    text-align: center;
+  }
+
+  .step-num {
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin: 0 auto 1rem;
+  }
+
+  .step-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-item p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .steps-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .hero-stats { gap: 1.25rem; }
+  }
+</style>

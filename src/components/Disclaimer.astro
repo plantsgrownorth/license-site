@@ -1,0 +1,25 @@
+---
+interface Props {
+  lastVerified?: string;
+}
+const { lastVerified } = Astro.props;
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<aside class="disclaimer" role="note" aria-label="Important disclaimer">
+  <p>
+    <strong>⚠️ Informational Use Only:</strong> The information on this page is provided for general informational purposes only
+    and does not constitute legal, financial, or professional advice. Licensing requirements, fees, and
+    procedures change frequently. Always verify current requirements directly with the issuing agency
+    or a licensed attorney before making business decisions.
+  </p>
+  {lastVerified && (
+    <p style="margin-top: 0.6rem; margin-bottom: 0; font-size: 0.82rem;">
+      <strong>Last verified:</strong> {formatDate(lastVerified)}
+    </p>
+  )}
+</aside>

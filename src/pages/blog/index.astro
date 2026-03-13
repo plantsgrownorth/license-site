@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+const title = 'Business Licensing Blog - Tips, Guides & News';
+const description =
+  'Expert articles on business licensing, permits, compliance tips, and guides for entrepreneurs across the United States.';
+
+// Blog posts will be added as Markdown/MDX files in this folder.
+// For now this is a placeholder index.
+const posts: Array<{ title: string; slug: string; date: string; excerpt: string }> = [];
+---
+
+<BaseLayout title={title} description={description}>
+  <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Blog' }]} />
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Business Licensing Blog</h1>
+      <p>Tips, guides, and updates to help you navigate business licensing requirements.</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="blog-layout">
+        {posts.length > 0 ? (
+          <div class="post-grid">
+            {posts.map((post) => (
+              <article class="post-card">
+                <time class="post-date">{post.date}</time>
+                <h2 class="post-title">
+                  <a href={`/blog/${post.slug}/`}>{post.title}</a>
+                </h2>
+                <p class="post-excerpt">{post.excerpt}</p>
+                <a href={`/blog/${post.slug}/`} class="read-more">Read More →</a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="coming-soon">
+            <div class="coming-soon-icon" aria-hidden="true">📝</div>
+            <h2>Blog Posts Coming Soon</h2>
+            <p>
+              We're working on in-depth articles about business licensing requirements,
+              tips for new entrepreneurs, and state-specific guides. Check back soon!
+            </p>
+            <p>In the meantime, browse our license requirement guides:</p>
+            <div class="cta-links">
+              <a href="/#states" class="btn btn-primary">Browse by State</a>
+              <a href="/#business-types" class="btn btn-outline">Browse by Business Type</a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-layout {
+    padding: 2rem 0;
+    max-width: 800px;
+  }
+
+  .post-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .post-date {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .post-title a {
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .post-title a:hover { color: var(--color-primary); }
+
+  .post-excerpt {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.85rem;
+  }
+
+  .read-more {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .read-more:hover { text-decoration: underline; }
+
+  .coming-soon {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  .coming-soon-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .coming-soon h2 { margin-bottom: 0.75rem; }
+  .coming-soon p {
+    color: var(--color-text-muted);
+    max-width: 480px;
+    margin: 0 auto 1rem;
+  }
+  .cta-links {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+</style>

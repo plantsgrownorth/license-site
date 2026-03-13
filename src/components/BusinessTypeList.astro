@@ -1,0 +1,31 @@
+---
+import businessTypes from '../data/business-types.json';
+
+interface Props {
+  heading?: string;
+  showHeading?: boolean;
+  linkToState?: string;
+}
+
+const { heading = 'Business Types', showHeading = true, linkToState } = Astro.props;
+---
+
+<section id="business-types" class="section">
+  {showHeading && (
+    <div class="section-heading">
+      <h2>{heading}</h2>
+      <span class="section-count">{businessTypes.length} types</span>
+    </div>
+  )}
+  <div class="biz-type-grid">
+    {businessTypes.map((bt) => (
+      <a
+        href={linkToState ? `/${linkToState}/${bt.slug}/` : `/#business-types`}
+        class="biz-type-card"
+      >
+        <div class="biz-type-name">{bt.name}</div>
+        <div class="biz-type-desc">{bt.description}</div>
+      </a>
+    ))}
+  </div>
+</section>

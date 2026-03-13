@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import businessTypes from '../../data/business-types.json';
+
+const title = 'Business License Requirements by Type - All 50 States';
+const description =
+  'Browse business licensing requirements by business type. Find what licenses your specific business needs across all 50 U.S. states.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Breadcrumbs
+    items={[
+      { label: 'Home', href: '/' },
+      { label: 'Licenses by Type' },
+    ]}
+  />
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Business Licenses by Type</h1>
+      <p>
+        Select a business type to see licensing requirements across all 50 states —
+        fees, agencies, documents, and step-by-step guides.
+      </p>
+      <div class="page-hero-meta">
+        <span class="badge">📋 {businessTypes.length} business types</span>
+        <span class="badge">🗺️ All 50 states</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="section-heading" style="margin-top: 2rem;">
+        <h2>All Business Types</h2>
+        <span class="section-count">{businessTypes.length} categories</span>
+      </div>
+      <div class="biz-type-grid">
+        {businessTypes.map((bt) => (
+          <a href={`/licenses/${bt.slug}/`} class="biz-type-card">
+            <div class="biz-type-name">{bt.name}</div>
+            <div class="biz-type-desc">{bt.description}</div>
+            <span class="biz-type-cta">View all states →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .biz-type-cta {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+</style>

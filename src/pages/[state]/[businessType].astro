@@ -1,0 +1,468 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+
+export async function getStaticPaths() {
+  const licenseFiles = import.meta.glob('../../data/licenses/*.json', { eager: true });
+
+  const paths: any[] = [];
+
+  for (const [, module] of Object.entries(licenseFiles)) {
+    const data = (module as { default: any }).default;
+    for (const license of data.licenses) {
+      paths.push({
+        params: {
+          state: data.stateSlug,
+          businessType: license.businessTypeSlug,
+        },
+        props: {
+          license,
+          stateSlug: data.stateSlug,
+          stateName: data.state,
+          stateAbbreviation: data.stateAbbreviation,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface License {
+  businessType: string;
+  businessTypeSlug: string;
+  licenseName: string;
+  issuingAgency: string;
+  agencyWebsite: string;
+  officialApplicationUrl: string;
+  applicationFee: string;
+  renewalFee: string;
+  renewalPeriod: string;
+  requiredDocuments: string[];
+  prerequisites: string[];
+  processingTimeline: string;
+  applicationProcess: string[];
+  lastVerified: string;
+  notes?: string;
+}
+
+interface Props {
+  license: License;
+  stateSlug: string;
+  stateName: string;
+  stateAbbreviation: string;
+}
+
+const { license, stateSlug, stateName, stateAbbreviation } = Astro.props;
+
+const title = `${license.businessType} License in ${stateName} - Requirements & Fees (2026)`;
+const description = `Get ${license.businessType.toLowerCase()} license requirements in ${stateName}: ${license.applicationFee} application fee, required documents, processing time, and step-by-step application guide. Issued by ${license.issuingAgency}.`;
+
+const pageUrl = `https://businesslicenseguide.com/${stateSlug}/${license.businessTypeSlug}/`;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `How much does a ${license.businessType.toLowerCase()} license cost in ${stateName}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `The application fee for a ${license.businessType.toLowerCase()} license in ${stateName} is ${license.applicationFee}. The renewal fee is ${license.renewalFee}.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: `Who issues the ${license.businessType.toLowerCase()} license in ${stateName}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `The ${license.licenseName} in ${stateName} is issued by the ${license.issuingAgency}. You can find more information at their official website.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: `How long does it take to get a ${license.businessType.toLowerCase()} license in ${stateName}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Processing time for a ${license.businessType.toLowerCase()} license in ${stateName} is typically ${license.processingTimeline}.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: `What documents are needed for a ${license.businessType.toLowerCase()} license in ${stateName}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Required documents include: ${license.requiredDocuments.join(', ')}.`,
+      },
+    },
+  ],
+};
+
+const governmentServiceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'GovernmentService',
+  name: license.licenseName,
+  serviceType: `${license.businessType} License`,
+  provider: {
+    '@type': 'GovernmentOrganization',
+    name: license.issuingAgency,
+    url: license.agencyWebsite,
+  },
+  areaServed: {
+    '@type': 'State',
+    name: stateName,
+  },
+  url: license.officialApplicationUrl,
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={pageUrl}
+  jsonLd={[faqSchema, governmentServiceSchema]}
+>
+  <Breadcrumbs
+    items={[
+      { label: 'Home', href: '/' },
+      { label: stateName, href: `/${stateSlug}/` },
+      { label: license.businessType },
+    ]}
+  />
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="hero-eyebrow">{stateAbbreviation} · {license.businessType}</div>
+      <h1>{license.licenseName}</h1>
+      <p>
+        Official requirements, fees, and application guide for a
+        {license.businessType.toLowerCase()} license in {stateName}.
+      </p>
+      <div class="page-hero-meta">
+        <span class="badge">🏛️ {stateAbbreviation}</span>
+        <span class="badge">💰 {license.applicationFee}</span>
+        <span class="badge">⏱️ {license.processingTimeline}</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container" style="padding-top: 2rem;">
+      <div class="license-layout">
+
+        <!-- Main Content -->
+        <article class="license-content">
+
+          <!-- Agency Info -->
+          <div class="section-block">
+            <h2>Issuing Agency</h2>
+            <div class="agency-card">
+              <div class="agency-name">{license.issuingAgency}</div>
+              <a href={license.agencyWebsite} target="_blank" rel="noopener noreferrer" class="agency-link">
+                Visit Official Website →
+              </a>
+            </div>
+          </div>
+
+          <!-- Required Documents -->
+          <div class="section-block">
+            <h2>Required Documents</h2>
+            <ul class="doc-list">
+              {license.requiredDocuments.map((doc) => (
+                <li>
+                  <span class="doc-icon" aria-hidden="true">📄</span>
+                  {doc}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Prerequisites -->
+          {license.prerequisites.length > 0 && (
+            <div class="section-block">
+              <h2>Prerequisites</h2>
+              <ul class="prereq-list">
+                {license.prerequisites.map((prereq) => (
+                  <li>
+                    <span class="prereq-icon" aria-hidden="true">✓</span>
+                    {prereq}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- Application Process -->
+          <div class="section-block">
+            <h2>Step-by-Step Application Process</h2>
+            <ol class="step-list">
+              {license.applicationProcess.map((step) => (
+                <li><span>{step}</span></li>
+              ))}
+            </ol>
+          </div>
+
+          <!-- Notes -->
+          {license.notes && (
+            <div class="section-block">
+              <h2>Important Notes</h2>
+              <div class="alert alert-info">
+                <p style="margin:0;">{license.notes}</p>
+              </div>
+            </div>
+          )}
+
+          <!-- FAQ Section -->
+          <div class="section-block faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>How much does a {license.businessType.toLowerCase()} license cost in {stateName}?</summary>
+                <div class="faq-answer">
+                  <p>The application fee is <strong>{license.applicationFee}</strong>. The renewal fee is <strong>{license.renewalFee}</strong> ({license.renewalPeriod}).</p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary>How long does it take to get the license?</summary>
+                <div class="faq-answer">
+                  <p>Processing time is typically <strong>{license.processingTimeline}</strong>. Plan ahead and submit your application well before you need to begin operating.</p>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary>What documents do I need?</summary>
+                <div class="faq-answer">
+                  <ul>
+                    {license.requiredDocuments.map((doc) => <li>{doc}</li>)}
+                  </ul>
+                </div>
+              </details>
+
+              <details class="faq-item">
+                <summary>Who issues this license in {stateName}?</summary>
+                <div class="faq-answer">
+                  <p>This license is issued by the <strong>{license.issuingAgency}</strong>. Visit their <a href={license.agencyWebsite} target="_blank" rel="noopener noreferrer">official website</a> for the most up-to-date information.</p>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <Disclaimer lastVerified={license.lastVerified} />
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="license-sidebar">
+          <div class="info-block">
+            <h3>At a Glance</h3>
+            <div class="info-row">
+              <div class="info-icon">💰</div>
+              <div>
+                <div class="info-label">Application Fee</div>
+                <div class="info-value">{license.applicationFee}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">🔄</div>
+              <div>
+                <div class="info-label">Renewal Fee</div>
+                <div class="info-value">{license.renewalFee}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">📅</div>
+              <div>
+                <div class="info-label">Renewal Period</div>
+                <div class="info-value">{license.renewalPeriod}</div>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">⏱️</div>
+              <div>
+                <div class="info-label">Processing Time</div>
+                <div class="info-value">{license.processingTimeline}</div>
+              </div>
+            </div>
+          </div>
+
+          <a
+            href={license.officialApplicationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            style="width: 100%; justify-content: center; margin-bottom: 0.75rem;"
+          >
+            Apply Online →
+          </a>
+
+          <a
+            href={license.agencyWebsite}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline"
+            style="width: 100%; justify-content: center; margin-bottom: 1.5rem;"
+          >
+            Visit Agency Website
+          </a>
+
+          <div class="info-block">
+            <h3>Related Pages</h3>
+            <ul class="related-links">
+              <li><a href={`/${stateSlug}/`}>All {stateName} Licenses</a></li>
+              <li><a href="/">Browse All States</a></li>
+            </ul>
+          </div>
+
+          <div class="verified-badge">
+            <span class="verified-icon" aria-hidden="true">✅</span>
+            <div>
+              <div class="verified-label">Last Verified</div>
+              <div class="verified-date">{license.lastVerified}</div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero-eyebrow {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0.6rem;
+  }
+
+  /* Agency card */
+  .agency-card {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .agency-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .agency-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-primary);
+  }
+  .agency-link:hover { text-decoration: underline; }
+
+  /* Document list */
+  .doc-list {
+    list-style: none;
+    padding: 0;
+  }
+  .doc-list li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+  .doc-list li:last-child { border-bottom: none; }
+  .doc-icon { flex-shrink: 0; font-size: 1rem; margin-top: 0.05rem; }
+
+  /* Prerequisites list */
+  .prereq-list {
+    list-style: none;
+    padding: 0;
+  }
+  .prereq-list li {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+  .prereq-list li:last-child { border-bottom: none; }
+  .prereq-icon {
+    flex-shrink: 0;
+    color: var(--color-secondary);
+    font-weight: 700;
+    margin-top: 0.05rem;
+  }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .faq-item {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .faq-item summary {
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-answer {
+    padding: 0.1rem 1rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    border-top: 1px solid var(--color-border);
+  }
+  .faq-answer p { margin-top: 0.75rem; }
+  .faq-answer ul { margin-top: 0.75rem; }
+
+  /* Sidebar related links */
+  .related-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .related-links li { margin-bottom: 0.5rem; }
+  .related-links li:last-child { margin-bottom: 0; }
+  .related-links a {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .related-links a:hover { text-decoration: underline; }
+
+  /* Verified badge */
+  .verified-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  .verified-icon { font-size: 1.25rem; }
+  .verified-label { font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 0.1rem; }
+  .verified-date { font-weight: 600; color: var(--color-secondary); }
+</style>

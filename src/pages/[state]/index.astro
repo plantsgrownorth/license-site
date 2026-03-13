@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import LicenseCard from '../../components/LicenseCard.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+import statesData from '../../data/states.json';
+import businessTypes from '../../data/business-types.json';
+
+export async function getStaticPaths() {
+  // Dynamically import all license JSON files
+  const licenseFiles = import.meta.glob('../../data/licenses/*.json', { eager: true });
+
+  const paths = statesData.map((state) => {
+    const fileKey = Object.keys(licenseFiles).find((k) =>
+      k.endsWith(`/${state.slug}.json`)
+    );
+    const licenseData = fileKey
+      ? (licenseFiles[fileKey] as { default: any }).default
+      : null;
+
+    return {
+      params: { state: state.slug },
+      props: { state, licenseData },
+    };
+  });
+
+  return paths;
+}
+
+interface LicenseEntry {
+  businessType: string;
+  businessTypeSlug: string;
+  licenseName: string;
+  issuingAgency: string;
+  agencyWebsite: string;
+  applicationFee: string;
+  renewalFee: string;
+  renewalPeriod: string;
+  lastVerified: string;
+}
+
+interface StateData {
+  name: string;
+  abbreviation: string;
+  slug: string;
+}
+
+interface LicenseData {
+  state: string;
+  stateSlug: string;
+  stateAbbreviation: string;
+  licenses: LicenseEntry[];
+}
+
+interface Props {
+  state: StateData;
+  licenseData: LicenseData | null;
+}
+
+const { state, licenseData } = Astro.props;
+
+const title = `${state.name} Business License Requirements (2026) - All Types`;
+const description = `Complete guide to business licensing in ${state.name}. Find requirements, fees, and application steps for ${licenseData?.licenses.length ?? 'multiple'} business types.`;
+
+const hasData = licenseData && licenseData.licenses.length > 0;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  url: `https://businesslicenseguide.com/${state.slug}/`,
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <Breadcrumbs
+    items={[
+      { label: 'Home', href: '/' },
+      { label: state.name },
+    ]}
+  />
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="hero-eyebrow">{state.abbreviation} · Business Licensing</div>
+      <h1>{state.name} Business License Requirements</h1>
+      <p>
+        Official licensing requirements, fees, and application guides for
+        {hasData ? licenseData.licenses.length : 'all'} business types in {state.name}.
+      </p>
+      {hasData && (
+        <div class="page-hero-meta">
+          <span class="badge">📋 {licenseData.licenses.length} license types</span>
+          <span class="badge">🏛️ {state.abbreviation}</span>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      {hasData ? (
+        <>
+          <div class="section-heading" style="margin-top: 2rem;">
+            <h2>Available License Guides</h2>
+            <span class="section-count">{licenseData.licenses.length} entries</span>
+          </div>
+
+          <div class="license-list">
+            {licenseData.licenses.map((license) => (
+              <LicenseCard
+                licenseName={license.licenseName}
+                businessType={license.businessType}
+                businessTypeSlug={license.businessTypeSlug}
+                issuingAgency={license.issuingAgency}
+                applicationFee={license.applicationFee}
+                renewalPeriod={license.renewalPeriod}
+                stateSlug={state.slug}
+              />
+            ))}
+          </div>
+
+          <!-- Other business types not yet covered -->
+          <div class="coming-soon-section">
+            <h2>More Business Types Coming Soon</h2>
+            <p>
+              We are actively adding licensing data for all business types in {state.name}.
+              Check back regularly or <a href="/contact/">contact us</a> to request a specific license type.
+            </p>
+            <div class="other-types-grid">
+              {businessTypes
+                .filter(
+                  (bt) =>
+                    !licenseData.licenses.some((l) => l.businessTypeSlug === bt.slug)
+                )
+                .map((bt) => (
+                  <div class="other-type-item">
+                    <span>{bt.name}</span>
+                    <span class="coming-soon-tag">Coming Soon</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div class="no-data-notice">
+          <h2>Data Coming Soon</h2>
+          <p>
+            We're working on adding licensing data for {state.name}.
+            In the meantime, you can visit the official state government website
+            for business licensing information.
+          </p>
+          <a href="/contact/" class="btn btn-primary">Request This State</a>
+        </div>
+      )}
+
+      <Disclaimer />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero-eyebrow {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0.6rem;
+  }
+
+  .coming-soon-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .coming-soon-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .coming-soon-section p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .other-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .other-type-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.85rem;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+  }
+
+  .coming-soon-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: 100px;
+    padding: 0.15rem 0.55rem;
+    flex-shrink: 0;
+  }
+
+  .no-data-notice {
+    text-align: center;
+    padding: 3rem 1rem;
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const siteUrl = 'https://businesslicenseguide.com';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: siteUrl + item.href } : {}),
+  })),
+};
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="container">
+    <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+      {items.map((item, index) => (
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          aria-current={index === items.length - 1 ? 'page' : undefined}
+        >
+          {item.href && index < items.length - 1 ? (
+            <a href={item.href} itemprop="item">
+              <span itemprop="name">{item.label}</span>
+            </a>
+          ) : (
+            <span itemprop="name">{item.label}</span>
+          )}
+          <meta itemprop="position" content={String(index + 1)} />
+        </li>
+      ))}
+    </ol>
+  </div>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

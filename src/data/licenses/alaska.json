@@ -1,0 +1,118 @@
+{
+  "state": "Alaska",
+  "stateSlug": "alaska",
+  "stateAbbreviation": "AK",
+  "licenses": [
+    {
+      "businessType": "General Business License",
+      "businessTypeSlug": "general-business-license",
+      "licenseName": "Alaska Business License",
+      "issuingAgency": "Alaska Department of Commerce, Community, and Economic Development (DCCED)",
+      "agencyWebsite": "https://www.commerce.alaska.gov/web/cbpl/BusinessLicensing.aspx",
+      "officialApplicationUrl": "https://www.commerce.alaska.gov/cbp/businesslicense",
+      "applicationFee": "$50 (biennial); $25 (for businesses with $5,000 or less in annual gross receipts)",
+      "renewalFee": "$50 biennial",
+      "renewalPeriod": "Every two years (expires December 31 of even-numbered years)",
+      "requiredDocuments": [
+        "Completed Alaska Business License application",
+        "Federal Employer Identification Number (FEIN) or Social Security Number",
+        "Business name and primary business address in Alaska",
+        "Description of business activity",
+        "Payment of applicable fee"
+      ],
+      "prerequisites": [
+        "Must have a physical or registered address in Alaska",
+        "Corporations, LLCs, and partnerships must be registered with the Alaska Division of Corporations",
+        "Some professions require additional occupational licenses before applying for a general business license"
+      ],
+      "processingTimeline": "Online applications processed immediately; paper applications 5–10 business days",
+      "applicationProcess": [
+        "Determine if your business requires any professional or occupational licenses in addition to the general business license",
+        "Register your business entity with the Alaska Division of Corporations, Business, and Professional Licensing at the DCCED website",
+        "Obtain a Federal EIN from the IRS at irs.gov",
+        "Apply online at the DCCED Online Licensing Portal or submit a paper application by mail",
+        "Pay the $50 biennial fee (or $25 if gross receipts are $5,000 or less)",
+        "Receive your Alaska Business License certificate and display it at your principal place of business"
+      ],
+      "lastVerified": "2026-01-15",
+      "notes": "An Alaska Business License is required for all businesses selling goods or services in Alaska. This is a state-level license; some municipalities such as Anchorage and Fairbanks may require additional local business licenses."
+    },
+    {
+      "businessType": "Cleaning Business",
+      "businessTypeSlug": "cleaning-business",
+      "licenseName": "Alaska Business License (Cleaning Services)",
+      "issuingAgency": "Alaska Department of Commerce, Community, and Economic Development (DCCED)",
+      "agencyWebsite": "https://www.commerce.alaska.gov/web/cbpl/BusinessLicensing.aspx",
+      "officialApplicationUrl": "https://www.commerce.alaska.gov/cbp/businesslicense",
+      "applicationFee": "$50 biennial",
+      "renewalFee": "$50 every two years",
+      "renewalPeriod": "Every two years (expires December 31 of even-numbered years)",
+      "requiredDocuments": [
+        "Completed Alaska Business License application",
+        "Business name and address",
+        "Federal EIN or Social Security Number",
+        "Proof of general liability insurance (required for commercial contracts)",
+        "Proof of workers' compensation insurance (required if you have employees)"
+      ],
+      "prerequisites": [
+        "Must register business entity with the Alaska Division of Corporations if operating as LLC, corporation, or partnership",
+        "Workers' compensation insurance is mandatory if you have one or more employees in Alaska",
+        "If performing janitorial work for government contracts, may need to comply with Alaska labor and wage regulations"
+      ],
+      "processingTimeline": "Online: immediate; Paper: 5–10 business days",
+      "applicationProcess": [
+        "Register your business structure (LLC, sole proprietor, etc.) with the Alaska Division of Corporations",
+        "Obtain a Federal EIN from the IRS",
+        "Obtain general liability insurance and, if hiring employees, workers' compensation insurance",
+        "Apply for an Alaska Business License online through the DCCED portal",
+        "Pay the $50 biennial fee",
+        "Check with your local municipality (e.g., Municipality of Anchorage) for any additional local business license requirements",
+        "Renew your license before December 31 of each even-numbered year"
+      ],
+      "lastVerified": "2026-01-15",
+      "notes": "Alaska does not have a specific cleaning business license beyond the general Alaska Business License. However, if you perform any work involving hazardous materials or mold remediation, additional certifications may be required."
+    },
+    {
+      "businessType": "Food Truck",
+      "businessTypeSlug": "food-truck",
+      "licenseName": "Alaska Mobile Food Service Permit",
+      "issuingAgency": "Alaska Department of Environmental Conservation – Food Safety and Sanitation Program",
+      "agencyWebsite": "https://dec.alaska.gov/eh/fss/food/",
+      "officialApplicationUrl": "https://dec.alaska.gov/eh/fss/food/permits/",
+      "applicationFee": "$400 – $750 (state food service permit; varies by risk category and seating capacity)",
+      "renewalFee": "$400 – $750 annually",
+      "renewalPeriod": "Annual (January 1 – December 31)",
+      "requiredDocuments": [
+        "Completed Food Establishment Permit application",
+        "Vehicle registration and proof of ownership",
+        "Proposed menu and food preparation procedures",
+        "Commissary agreement with an approved facility",
+        "HACCP plan (for certain high-risk food items)",
+        "Food manager certification (Alaska Food Worker Card or equivalent)",
+        "Proof of liability insurance",
+        "Alaska Business License"
+      ],
+      "prerequisites": [
+        "Must operate from an approved commissary for food storage, prep, and cleaning",
+        "Vehicle must pass a sanitation inspection by Alaska DEC",
+        "Food handler must have an Alaska Food Worker Card (available through the DEC)",
+        "Must comply with Municipality of Anchorage or local borough requirements if operating in those jurisdictions"
+      ],
+      "processingTimeline": "3 – 6 weeks from application to permit issuance, including inspection scheduling",
+      "applicationProcess": [
+        "Register your business with the Alaska Division of Corporations and obtain a state Business License",
+        "Obtain a Federal EIN from the IRS",
+        "Establish a commissary agreement with a licensed food establishment in Alaska",
+        "Ensure your food truck is equipped with proper handwashing sinks, a three-compartment sink, adequate refrigeration, and fire suppression equipment",
+        "Complete the Food Establishment Permit application and submit it to the Alaska DEC Food Safety and Sanitation Program with required documents",
+        "Schedule a pre-operational inspection with your regional DEC Environmental Health office",
+        "Pass the sanitation inspection and pay the permit fee",
+        "Obtain any required local permits from the municipality or borough where you will operate",
+        "Obtain a Food Worker Card from the Alaska DEC for all food handlers",
+        "Display all permits and certifications inside the food truck during operation"
+      ],
+      "lastVerified": "2026-01-15",
+      "notes": "Alaska's large geographic area means regulations can vary significantly between the Municipality of Anchorage, Fairbanks North Star Borough, and unorganized boroughs. Always check with local authorities before operating. Seasonal food trucks may apply for a temporary food service permit."
+    }
+  ]
+}

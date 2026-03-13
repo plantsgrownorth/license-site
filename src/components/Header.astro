@@ -1,0 +1,45 @@
+---
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'By State', href: '/#states' },
+  { label: 'By License Type', href: '/licenses/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'About', href: '/about/' },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo" aria-label="Business License Guide Home">
+      <span class="logo-icon" aria-hidden="true">📋</span>
+      <span>Business License Guide</span>
+    </a>
+
+    <button
+      id="nav-toggle"
+      class="nav-toggle"
+      aria-controls="site-nav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      {navLinks.map(({ label, href }) => (
+        <a
+          href={href}
+          aria-current={pathname === href ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
