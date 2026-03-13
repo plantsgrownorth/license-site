@@ -1,0 +1,151 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: string;
+  lastUpdated?: string;
+}
+
+const { title, description, date, lastUpdated } = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+const formattedUpdated = lastUpdated
+  ? new Date(lastUpdated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  : null;
+
+const canonicalUrl = `https://statewages.com${Astro.url.pathname}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: date,
+  dateModified: lastUpdated ?? date,
+  publisher: { '@type': 'Organization', name: 'StateWages', url: 'https://statewages.com' },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonicalUrl} jsonLd={jsonLd}>
+  <div class="blog-hero">
+    <div class="container">
+      <a href="/blog/" class="back-link">← All posts</a>
+      <h1>{title}</h1>
+      <div class="post-meta">
+        <time datetime={date}>{formattedDate}</time>
+        {formattedUpdated && <span>· Updated {formattedUpdated}</span>}
+        <span>· StateWages Staff</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="blog-layout">
+        <article class="blog-post">
+          <slot />
+          <div class="post-footer">
+            <p>
+              All salary data referenced in this article is sourced from the U.S. Bureau of Labor Statistics,
+              Occupational Employment and Wage Statistics (OEWS) program, May 2024.
+              Numbers reflect median annual wages unless otherwise stated.
+            </p>
+          </div>
+        </article>
+
+        <aside class="blog-sidebar">
+          <div class="info-block">
+            <h3>About the data</h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+              All figures come from <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS</a> May 2024.
+              Updated annually when new data is released.
+            </p>
+          </div>
+          <div class="info-block">
+            <h3>Browse salary data</h3>
+            <ul class="related-links">
+              <li><a href="/#states">Salaries by State</a></li>
+              <li><a href="/#occupations">Salaries by Occupation</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-hero {
+    background: var(--bg-inset);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 0 2rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    text-decoration: none;
+    margin-bottom: 1rem;
+  }
+  .back-link:hover { color: var(--primary); }
+
+  .blog-hero h1 { font-size: clamp(1.5rem, 4vw, 2.25rem); max-width: 720px; }
+
+  .post-meta {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    margin-top: 0.75rem;
+  }
+
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 3rem;
+    align-items: start;
+    padding: 2.5rem 0 5rem;
+  }
+
+  /* Post content typography */
+  .blog-post :global(h2) {
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-post :global(h3) { font-size: 1.05rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+  .blog-post :global(p) { line-height: 1.8; margin-bottom: 1.1rem; color: var(--text); }
+  .blog-post :global(ul), .blog-post :global(ol) { margin-bottom: 1.1rem; }
+  .blog-post :global(li) { line-height: 1.7; margin-bottom: 0.35rem; }
+  .blog-post :global(strong) { font-weight: 600; }
+  .blog-post :global(a) { color: var(--primary); }
+  .blog-post :global(table) { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 1.25rem 0; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .blog-post :global(th) { background: var(--bg-alt); padding: 0.6rem 0.85rem; text-align: left; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+  .blog-post :global(td) { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--border); }
+  .blog-post :global(tr:last-child td) { border-bottom: none; }
+  .blog-post :global(blockquote) { border-left: 3px solid var(--primary); padding: 0.5rem 1rem; margin: 1.25rem 0; color: var(--text-muted); font-style: italic; }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    line-height: 1.65;
+  }
+
+  .blog-sidebar { position: sticky; top: calc(58px + 1rem); }
+
+  @media (max-width: 900px) {
+    .blog-layout { grid-template-columns: 1fr; }
+    .blog-sidebar { position: static; }
+  }
+</style>

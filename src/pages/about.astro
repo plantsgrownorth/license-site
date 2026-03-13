@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'About StateWages — Why This Site Exists';
+const description = 'StateWages was built out of frustration with salary sites that hide real data behind paywalls and surveys. Here\'s the story behind it and how the data works.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="about-hero">
+    <div class="container">
+      <span class="eyebrow">About this site</span>
+      <h1>Why I Built This</h1>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="about-content">
+
+        <div class="about-body">
+
+          <p class="lead">
+            A few years ago I was trying to figure out whether to take a job offer in another state.
+            The salary seemed good, but I had no clean way to tell if it was actually good <em>for that market</em>.
+          </p>
+
+          <p>
+            I spent an embarrassing amount of time on Glassdoor, Indeed, and Payscale — and every single one
+            of them either hid the real numbers behind a login, showed me "estimated" ranges based on
+            self-reported surveys from 12 people, or pushed me toward some premium subscription to
+            see anything useful. The BLS website had the actual government data I needed, but navigating
+            it felt like reading a tax form. Rows of spreadsheet. No context. No comparison.
+          </p>
+
+          <p>
+            The data I wanted was public. The federal government collects it every year, for free,
+            for every occupation in every state. It was just buried.
+          </p>
+
+          <p>
+            So I built StateWages to fix that for myself — and figured other people probably run into
+            the same wall.
+          </p>
+
+          <h2>Where the data comes from</h2>
+
+          <p>
+            Every number on this site comes directly from the U.S. Bureau of Labor Statistics
+            Occupational Employment and Wage Statistics (OEWS) program. BLS surveys roughly
+            1.1 million businesses every year, covering 800+ occupations across all 50 states
+            plus DC. The May 2024 data (the most recent release) is what powers this site right now.
+          </p>
+
+          <p>
+            I download the raw data file from bls.gov, run it through a processing script, and
+            generate a page for every occupation-state combination that has enough data to report.
+            When BLS releases new data each May, I update the site within a few days. That's it.
+            No surveys. No estimates. No employer-submitted numbers that may or may not reflect reality.
+          </p>
+
+          <p>
+            The tradeoff is that BLS data is a snapshot — it reflects conditions from the survey period,
+            not today's job market. And BLS suppresses data when the sample size for a given occupation
+            in a given state is too small to report reliably, which is why some pages show "N/A" for
+            certain percentiles. That's not a bug. That's the data telling you it doesn't have enough
+            observations to give you a number worth trusting.
+          </p>
+
+          <h2>What the percentiles actually mean</h2>
+
+          <p>
+            A lot of people look at the "median" and stop there. The percentile breakdown is more
+            useful than most people realize:
+          </p>
+
+          <ul>
+            <li><strong>10th percentile</strong> — what someone just starting out, or working in a low-paying market, typically earns</li>
+            <li><strong>25th percentile</strong> — early-career or smaller employer range</li>
+            <li><strong>Median (50th)</strong> — the middle of the market. Half earn more, half earn less.</li>
+            <li><strong>75th percentile</strong> — experienced workers, larger employers, higher-cost areas</li>
+            <li><strong>90th percentile</strong> — top of the market. Senior roles, specialized skills, major metros.</li>
+          </ul>
+
+          <p>
+            When you're negotiating a salary, knowing where a number falls in that range matters
+            a lot more than knowing the average.
+          </p>
+
+          <h2>What this site is not</h2>
+
+          <p>
+            This is not a job board. I'm not trying to sell you a resume service or
+            connect you with recruiters. There are no surveys to fill out, no accounts to create,
+            and no premium tiers. The data is public and the site is free because there's no
+            reason it shouldn't be.
+          </p>
+
+          <p>
+            The site runs display ads to cover hosting costs and my time. That's the whole business model.
+          </p>
+
+          <div class="about-note">
+            <strong>A note on accuracy:</strong> I cross-check the data against BLS's own published
+            tables periodically, but if you spot a number that looks wrong, the most likely explanation
+            is a data suppression issue or a rounding difference. The raw source is always
+            <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a> —
+            that's the ground truth.
+          </div>
+
+        </div>
+
+        <aside class="about-sidebar">
+          <div class="info-block">
+            <h3>Site facts</h3>
+            <div class="info-row">
+              <div class="info-icon">📊</div>
+              <div><div class="info-label">Data source</div><div class="info-value">BLS OEWS May 2024</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">🗂️</div>
+              <div><div class="info-label">Occupations covered</div><div class="info-value">800+</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">🗺️</div>
+              <div><div class="info-label">States covered</div><div class="info-value">All 50 + DC</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">📅</div>
+              <div><div class="info-label">Updated</div><div class="info-value">Annually each May</div></div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon">💰</div>
+              <div><div class="info-label">Cost to use</div><div class="info-value">Free</div></div>
+            </div>
+          </div>
+
+          <div class="info-block">
+            <h3>Useful links</h3>
+            <ul class="related-links">
+              <li><a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS Program</a></li>
+              <li><a href="https://www.bls.gov/ooh/" target="_blank" rel="noopener">BLS Occupational Outlook Handbook</a></li>
+              <li><a href="/privacy-policy/">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    background: var(--bg-inset);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 0 2.5rem;
+  }
+
+  .about-content {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 2.5rem;
+    align-items: start;
+    padding: 2.5rem 0 5rem;
+  }
+
+  .about-body { max-width: 640px; }
+
+  .lead {
+    font-size: 1.1rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-body p { line-height: 1.75; margin-bottom: 1.1rem; }
+
+  .about-body h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-body ul { margin-bottom: 1.1rem; }
+  .about-body li { line-height: 1.65; margin-bottom: 0.45rem; }
+
+  .about-note {
+    background: var(--primary-light);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    font-size: 0.875rem;
+    color: var(--primary-dark);
+    line-height: 1.65;
+    margin-top: 2rem;
+  }
+
+  .about-sidebar { position: sticky; top: calc(58px + 1rem); }
+
+  @media (max-width: 900px) {
+    .about-content { grid-template-columns: 1fr; }
+    .about-sidebar { position: static; }
+  }
+</style>
