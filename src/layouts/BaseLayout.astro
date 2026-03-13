@@ -21,7 +21,7 @@ const {
   noIndex = false,
 } = Astro.props;
 
-const siteUrl = 'https://businesslicenseguide.com';
+const siteUrl = 'https://statewages.com';
 const resolvedCanonical = canonicalUrl ?? siteUrl + Astro.url.pathname;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : siteUrl + ogImage;
 
@@ -48,7 +48,7 @@ const jsonLdArray = jsonLd
     <meta property="og:url" content={resolvedCanonical} />
     <meta property="og:image" content={resolvedOgImage} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="BLS Salary Guide" />
+    <meta property="og:site_name" content="StateWages" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

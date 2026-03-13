@@ -108,16 +108,6 @@ main { flex: 1; padding: 3rem 0 5rem; }
 }
 .site-logo:hover { color: rgba(255,255,255,0.85); }
 
-.logo-mark {
-  width: 26px;
-  height: 26px;
-  background: var(--primary);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
 
 .site-nav {
   display: flex;

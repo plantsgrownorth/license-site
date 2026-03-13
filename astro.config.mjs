@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://businesslicenseguide.com',
+  site: 'https://statewages.com',
   output: 'static',
   integrations: [
     sitemap(),

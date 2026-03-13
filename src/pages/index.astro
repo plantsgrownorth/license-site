@@ -7,14 +7,14 @@ import indexData from '../data/index.json';
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
 
-const title       = 'Salary Data by State and Occupation — 2024 BLS OEWS';
+const title       = 'StateWages — Salary Data for Every Job in Every State (2024)';
 const description = 'Free salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts sourced directly from the U.S. Bureau of Labor Statistics.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'BLS Salary Guide',
-  url: 'https://businesslicenseguide.com',
+  name: 'StateWages',
+  url: 'https://statewages.com',
   description,
 };
 ---
@@ -27,11 +27,11 @@ const jsonLd = {
       <div class="hero-inner">
         <div class="hero-text">
           <span class="eyebrow">Free · BLS OEWS 2024 · All 50 States</span>
-          <h1>U.S. Salary Data<br/>for Every Occupation</h1>
+          <h1>What Does That Job<br/>Pay in Your State?</h1>
           <p class="hero-lead">
-            Median wages, percentile ranges, and employment statistics
+            Median wages, percentile ranges, and employment figures
             for 800+ occupations across all 50 states — drawn directly
-            from the Bureau of Labor Statistics.
+            from official Bureau of Labor Statistics data.
           </p>
           <div class="hero-actions">
             <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>

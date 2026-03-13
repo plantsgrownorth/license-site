@@ -23,5 +23,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# large BLS source data files
+*.csv
+*.xlsx
+
 # jetbrains setting folder
 .idea/
