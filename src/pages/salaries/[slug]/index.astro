@@ -40,8 +40,8 @@ let title = '', description = '', jsonLd: any;
 if (type === 'state') {
   const occs = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
   const top5  = occs.slice(0, 5).map((o: any) => o.title).join(', ');
-  title       = `Salaries in ${data.state}: Median Pay by Occupation`;
-  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Nurse, teacher, developer salaries and more. Official survey data.`;
+  title       = `${data.state} Salary by Job: Median Pay for ${data.occupations.length}+ Occupations`;
+  description = `What every job pays in ${data.state}. ${data.state} salary by occupation: nurse, teacher, developer, and 800+ more. Median wages by job, most current data.`;
   jsonLd      = [
     { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://statewages.com/salaries/${data.stateSlug}/` },
     { '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement: [
@@ -88,8 +88,8 @@ if (type === 'state') {
       {type === 'state' ? (
         <>
           <span class="eyebrow">{data.stateAbbreviation} · Most current data</span>
-          <h1>Salaries in {data.state}</h1>
-          <p>Median wages for {data.occupations.length} occupations. Click any row to see the full salary breakdown.</p>
+          <h1>{data.state} Salary by Job</h1>
+          <p>Median pay for {data.occupations.length} occupations in {data.state}. Click any row for full salary breakdown and percentiles.</p>
           <div class="page-hero-meta">
             <span class="badge">{data.occupations.length} occupations</span>
           </div>
@@ -98,7 +98,7 @@ if (type === 'state') {
         <>
           <span class="eyebrow">SOC {data.socCode} · Most current data</span>
           <h1>{data.title} Salary by State</h1>
-          <p>National median: <strong>{fmt(data.national?.medianAnnual)}/yr</strong> · {fmtNum(data.national?.totalEmployment)} employed nationally</p>
+          <p>{data.title} pay in every state: national median <strong>{fmt(data.national?.medianAnnual)}/year</strong>. {fmtNum(data.national?.totalEmployment)} employed nationally. Click a state for full breakdown.</p>
           <div class="page-hero-meta">
             <span class="badge">{data.states.length} states</span>
             {data.typicalEducation && <span class="badge">{data.typicalEducation}</span>}

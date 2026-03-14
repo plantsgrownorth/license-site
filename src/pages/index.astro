@@ -5,8 +5,8 @@ import indexData from '../data/index.json';
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
 
-const title       = 'Salary by State & Job: Wages for Every Occupation in Every State';
-const description = 'Find salary data by state or by job title. Nurse, teacher, developer, and 800+ more occupations in all 50 states. Official wage survey data, free.';
+const title       = 'Salary by State & Job: What Every Job Pays in Every State';
+const description = 'Salary by state and by job: nurse, teacher, developer, and 800+ occupations in all 50 states. Find what any job pays in any state. Official data, free.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -21,8 +21,8 @@ const jsonLd = {
 
   <section class="hero">
     <div class="container">
-      <h1 class="hero-title">See what any job pays in any state</h1>
-      <p class="hero-one">Wage data for 800+ jobs in all 50 states. No signup, just pick a state or search for a job below.</p>
+      <h1 class="hero-title">Salary by State and Job: What Every Job Pays</h1>
+      <p class="hero-one">Salary data for 800+ jobs in all 50 states. Pick a state or search for a job to see pay by state. No signup.</p>
       <div class="hero-actions">
         <a href="#states" class="btn btn-primary btn-lg">Browse by state</a>
         <a href="#occupations" class="btn btn-outline btn-lg">Browse by job</a>

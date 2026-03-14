@@ -54,8 +54,8 @@ const natMedian = occHub?.national?.medianAnnual ?? null;
 const diffLabel = natMedian ? pctDiff(occ.medianAnnual, natMedian) : '';
 const isAbove   = diffLabel.startsWith('+');
 
-const title       = `${occ.title} Salary in ${stateData.state}`;
-const description = `${occ.title} median salary in ${stateData.state}: ${fmt(occ.medianAnnual)}/year${natMedian ? `, ${diffLabel}` : ''}. Full percentile breakdown, employment data, and state comparisons. Most current data.`;
+const title       = `${occ.title} Salary in ${stateData.state}: Median Pay & Percentiles`;
+const description = `${occ.title} salary in ${stateData.state}: ${fmt(occ.medianAnnual)}/year median${natMedian ? ` (${diffLabel})` : ''}. 10th–90th percentile, employment, and how ${stateData.state} compares to other states. Most current data.`;
 const canonUrl    = `https://statewages.com/salaries/${stateData.stateSlug}/${occ.slug}/`;
 
 // Top comparison states from occupation hub
