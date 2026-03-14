@@ -4,15 +4,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const title = 'Salary Guides & Data Breakdowns — StateWages Blog';
 const description = 'In-depth salary guides by occupation and state, built on the most current federal wage data. No fluff, no surveys — just numbers and context.';
 
-const postFiles = import.meta.glob('./*.md', { eager: true });
-const posts = Object.entries(postFiles).map(([path, mod]: [string, any]) => ({
-  ...mod,
-  slug: path.replace('./', '').replace('.md', ''),
-  url: '/blog/' + path.replace('./', '').replace('.md', '') + '/',
-}));
-const sorted = posts
-  .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
-const postCount = sorted.length; // for potential "X posts" label
+const postFiles = import.meta.glob<{ frontmatter: { title?: string; description?: string; date?: string } }>('./*.md', { eager: true });
+const posts = Object.entries(postFiles)
+  .map(([path, mod]) => {
+    const slug = path.replace(/^\.\//, '').replace(/\.md$/, '');
+    return { ...mod, slug, url: '/blog/' + slug + '/' };
+  })
+  .filter((p) => p.frontmatter?.title && p.frontmatter?.date);
+const sorted = [...posts].sort(
+  (a, b) => new Date(b.frontmatter.date!).getTime() - new Date(a.frontmatter.date!).getTime()
+);
+const postCount = sorted.length;
 ---
 
 <BaseLayout title={title} description={description}>
