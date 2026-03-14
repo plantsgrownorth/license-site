@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const title = 'Terms of Use';
+const description = 'Terms for using StateWages.';
+const lastUpdated = 'March 2026';
+---
+
+<BaseLayout title={title} description={description} noIndex={false}>
+  <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Terms of Use' }]} />
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Terms of Use</h1>
+      <p>Last updated: {lastUpdated}</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="prose-content">
+
+        <section class="section">
+          <h2>What this site is</h2>
+          <p>
+            StateWages (statewages.com) shows salary and wage data by state and occupation. The numbers come from the federal Occupational Employment and Wage Statistics survey. We present them so you can compare jobs and places. The site is free. We're not the government and we're not affiliated with the Bureau of Labor Statistics.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Use it normally</h2>
+          <p>
+            You can browse, search, and use the data for personal or research use. Don't scrape the whole site in a way that hammers our servers. Don't use the site for anything illegal or to harass anyone. Don't pretend you're us or that we endorse you. Basic stuff.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>No guarantee</h2>
+          <p>
+            We do our best to keep the data accurate and up to date, but we don't guarantee it. Salaries change. States add or change occupations. Use the site as one input for your decisions, not the only one. We're not giving you career, legal, or financial advice. If you make a move based on this data and it doesn't work out, we're not liable.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Changes to the site</h2>
+          <p>
+            We may add or remove features, change the design, or update data. We don't owe you advance notice. If the site goes down for a bit, we'll try to fix it. That's it.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Contact</h2>
+          <p>
+            Questions? <a href="/contact/">Contact us</a> or email <a href="mailto:arjungoel42@gmail.com">arjungoel42@gmail.com</a>.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .prose-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+  .prose-content .section {
+    margin-bottom: 2.25rem;
+  }
+</style>
