@@ -7,8 +7,8 @@ import indexData from '../data/index.json';
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
 
-const title       = 'StateWages — Salary Data for Every Job in Every State (2024)';
-const description = 'Free salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts sourced directly from the U.S. Bureau of Labor Statistics.';
+const title       = 'StateWages — Salary Data for Every Job in Every State';
+const description = 'Salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts from the most current federal occupational wage survey.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,12 +26,12 @@ const jsonLd = {
     <div class="container">
       <div class="hero-inner">
         <div class="hero-text">
-          <span class="eyebrow">BLS OEWS 2024 · All 50 States · Free</span>
+          <span class="eyebrow">All 50 States · Free · Most current data</span>
           <h1>What does that job pay<br/>in your state?</h1>
           <p class="hero-lead">
             Real salary data for 800+ occupations across all 50 states.
-            Not self-reported surveys. Not estimates. The actual BLS numbers,
-            organized so you can actually use them.
+            Not self-reported surveys. Not estimates. Official survey data,
+            organized so you can actually use it.
           </p>
           <div class="hero-actions">
             <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
@@ -50,8 +50,8 @@ const jsonLd = {
           </div>
           <div class="hsc-divider"></div>
           <div class="hsc-row">
-            <span class="hsc-num">BLS</span>
-            <span class="hsc-label">Official U.S. government data</span>
+            <span class="hsc-num">Gov</span>
+            <span class="hsc-label">Official survey data</span>
           </div>
           <div class="hsc-divider"></div>
           <div class="hsc-row">
@@ -108,7 +108,7 @@ const jsonLd = {
       </section>
 
       <div class="alert alert-info">
-        All figures come from the U.S. Bureau of Labor Statistics OEWS program, May 2024. I update the site each year when BLS drops new data. <a href="/about/">More about the data and how this works.</a>
+        Figures use the most current federal occupational wage survey. The site is updated when new data is released. <a href="/about/">More about the data.</a>
       </div>
 
     </div>

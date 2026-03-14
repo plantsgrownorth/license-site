@@ -52,11 +52,9 @@ const natMedian = occHub?.national?.medianAnnual ?? null;
 const diffLabel = natMedian ? pctDiff(occ.medianAnnual, natMedian) : '';
 const isAbove   = diffLabel.startsWith('+');
 
-const year = stateData.dataYear ?? 2024;
-
-const title       = `${occ.title} Salary in ${stateData.state} (${year}) — BLS Data`;
-const description = `${occ.title} median salary in ${stateData.state}: ${fmt(occ.medianAnnual)}/year${natMedian ? `, ${diffLabel}` : ''}. Full percentile breakdown, employment data, and state comparisons from BLS OEWS ${year}.`;
-const canonUrl    = `https://businesslicenseguide.com/salaries/${stateData.stateSlug}/${occ.slug}/`;
+const title       = `${occ.title} Salary in ${stateData.state}`;
+const description = `${occ.title} median salary in ${stateData.state}: ${fmt(occ.medianAnnual)}/year${natMedian ? `, ${diffLabel}` : ''}. Full percentile breakdown, employment data, and state comparisons. Most current data.`;
+const canonUrl    = `https://statewages.com/salaries/${stateData.stateSlug}/${occ.slug}/`;
 
 // Top comparison states from occupation hub
 const compStates = occHub
@@ -76,10 +74,10 @@ const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: [
-    { '@type': 'Question', name: `What is the average ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `The mean ${occ.title} salary in ${stateData.state} is ${fmt(occ.meanAnnual)} per year. The median salary is ${fmt(occ.medianAnnual)} per year, based on BLS OEWS ${year} data.` } },
-    { '@type': 'Question', name: `What is the starting salary for a ${occ.title} in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Entry-level ${occ.title}s in ${stateData.state} typically earn around ${fmt(occ.pct10Annual)} per year (10th percentile), according to BLS OEWS ${year} data.` } },
-    { '@type': 'Question', name: `What is the highest ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Top earners (90th percentile) in this occupation in ${stateData.state} make approximately ${fmt(occ.pct90Annual)} per year, based on BLS OEWS ${year} data.` } },
-    { '@type': 'Question', name: `How many ${occ.title}s work in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `There are approximately ${fmtNum(occ.totalEmployment)} ${occ.title.toLowerCase()}s employed in ${stateData.state}, according to BLS OEWS ${year}.` } },
+    { '@type': 'Question', name: `What is the average ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `The mean ${occ.title} salary in ${stateData.state} is ${fmt(occ.meanAnnual)} per year. The median salary is ${fmt(occ.medianAnnual)} per year.` } },
+    { '@type': 'Question', name: `What is the starting salary for a ${occ.title} in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Entry-level ${occ.title}s in ${stateData.state} typically earn around ${fmt(occ.pct10Annual)} per year (10th percentile).` } },
+    { '@type': 'Question', name: `What is the highest ${occ.title} salary in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `Top earners (90th percentile) in this occupation in ${stateData.state} make approximately ${fmt(occ.pct90Annual)} per year.` } },
+    { '@type': 'Question', name: `How many ${occ.title}s work in ${stateData.state}?`, acceptedAnswer: { '@type': 'Answer', text: `There are approximately ${fmtNum(occ.totalEmployment)} ${occ.title.toLowerCase()}s employed in ${stateData.state}.` } },
   ],
 };
 
@@ -101,7 +99,7 @@ const bar = {
   <!-- Hero -->
   <div class="page-hero detail-hero">
     <div class="container">
-      <span class="eyebrow">{stateData.stateAbbreviation} · BLS OEWS {year} · SOC {occ.socCode}</span>
+      <span class="eyebrow">{stateData.stateAbbreviation} · SOC {occ.socCode} · Most current data</span>
       <h1>{occ.title} Salary in {stateData.state}</h1>
       <div class="hero-salary-row">
         <div class="hero-salary-main">
@@ -227,7 +225,7 @@ const bar = {
             <div class="faq-list">
               <details class="faq-item">
                 <summary>What is the average {occ.title} salary in {stateData.state}?</summary>
-                <div class="faq-answer"><p>The mean {occ.title.toLowerCase()} salary in {stateData.state} is <strong>{fmt(occ.meanAnnual)}</strong> per year. The median (middle) salary is <strong>{fmt(occ.medianAnnual)}</strong> per year. Source: BLS OEWS {year}.</p></div>
+                <div class="faq-answer"><p>The mean {occ.title.toLowerCase()} salary in {stateData.state} is <strong>{fmt(occ.meanAnnual)}</strong> per year. The median (middle) salary is <strong>{fmt(occ.medianAnnual)}</strong> per year.</p></div>
               </details>
               <details class="faq-item">
                 <summary>What is the starting salary for a {occ.title} in {stateData.state}?</summary>
@@ -252,10 +250,7 @@ const bar = {
 
           <!-- Source disclaimer -->
           <div class="disclaimer" role="note">
-            <strong>Data Source:</strong> This data is sourced from the U.S. Bureau of Labor Statistics,
-            Occupational Employment and Wage Statistics (OEWS) program, May {year} release.
-            All wages are estimates. Actual salaries may vary based on experience, education,
-            employer, and other factors. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a>
+            Figures use the most current federal occupational wage survey. All wages are estimates; actual pay varies by experience, education, and employer. <a href="/about/">About the data</a>.
           </div>
         </article>
 
@@ -318,7 +313,7 @@ const bar = {
             <span class="verified-icon">📅</span>
             <div>
               <div class="verified-label">Data Release</div>
-              <div class="verified-date">BLS OEWS May {year}</div>
+              <div class="verified-date">Current release</div>
             </div>
           </div>
         </aside>

@@ -40,17 +40,17 @@ let title = '', description = '', jsonLd: any;
 if (type === 'state') {
   const occs = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
   const top5  = occs.slice(0, 5).map((o: any) => o.title).join(', ');
-  title       = `Average Salaries in ${data.state} by Occupation (${data.dataYear})`;
-  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Includes ${top5} and more — sourced from BLS OEWS ${data.dataYear} data.`;
-  jsonLd      = { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://businesslicenseguide.com/salaries/${data.stateSlug}/` };
+  title       = `Average Salaries in ${data.state} by Occupation`;
+  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Includes ${top5} and more. Most current survey data.`;
+  jsonLd      = { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://statewages.com/salaries/${data.stateSlug}/` };
 } else {
   const topStates = [...data.states].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0)).slice(0, 3).map((s: any) => s.state).join(', ');
-  title       = `${data.title} Salary by State — ${data.dataYear} BLS Data`;
-  description = `${data.title} median salary: ${fmt(data.national?.medianAnnual)} nationally. Highest-paying states: ${topStates}. Full state-by-state breakdown from BLS OEWS ${data.dataYear}.`;
+  title       = `${data.title} Salary by State`;
+  description = `${data.title} median salary: ${fmt(data.national?.medianAnnual)} nationally. Highest-paying states: ${topStates}. Full state-by-state breakdown, most current data.`;
   jsonLd      = [
     { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description },
     { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: [
-      { '@type':'Question', name:`What is the average ${data.title} salary?`, acceptedAnswer:{ '@type':'Answer', text:`The national median ${data.title} salary is ${fmt(data.national?.medianAnnual)} per year, with a mean of ${fmt(data.national?.meanAnnual)}, based on BLS OEWS ${data.dataYear} data.` } },
+      { '@type':'Question', name:`What is the average ${data.title} salary?`, acceptedAnswer:{ '@type':'Answer', text:`The national median ${data.title} salary is ${fmt(data.national?.medianAnnual)} per year, with a mean of ${fmt(data.national?.meanAnnual)}.` } },
       { '@type':'Question', name:`Which state pays ${data.title}s the most?`, acceptedAnswer:{ '@type':'Answer', text:`${[...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.state} has the highest median ${data.title} salary at ${fmt([...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.medianAnnual)} per year.` } },
     ] }
   ];
@@ -68,17 +68,16 @@ if (type === 'state') {
     <div class="container">
       {type === 'state' ? (
         <>
-          <span class="eyebrow">{data.stateAbbreviation} · BLS OEWS {data.dataYear}</span>
+          <span class="eyebrow">{data.stateAbbreviation} · Most current data</span>
           <h1>Salaries in {data.state}</h1>
           <p>Median wages for {data.occupations.length} occupations. Click any row to see the full salary breakdown.</p>
           <div class="page-hero-meta">
             <span class="badge">{data.occupations.length} occupations</span>
-            <span class="badge">BLS {data.dataYear} data</span>
           </div>
         </>
       ) : (
         <>
-          <span class="eyebrow">BLS OEWS {data.dataYear} · SOC {data.socCode}</span>
+          <span class="eyebrow">SOC {data.socCode} · Most current data</span>
           <h1>{data.title} Salary by State</h1>
           <p>National median: <strong>{fmt(data.national?.medianAnnual)}/yr</strong> · {fmtNum(data.national?.totalEmployment)} employed nationally</p>
           <div class="page-hero-meta">
@@ -138,7 +137,7 @@ if (type === 'state') {
               </div>
               <div class="info-block">
                 <h3>Data Source</h3>
-                <p class="source-note">U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics (OEWS), May {data.dataYear}. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a></p>
+                <p class="source-note">Source: <a href="/about/">about the data</a></p>
               </div>
             </aside>
           </div>
@@ -214,7 +213,7 @@ if (type === 'state') {
               </div>
               <div class="info-block">
                 <h3>Data Source</h3>
-                <p class="source-note">U.S. Bureau of Labor Statistics, OEWS May {data.dataYear}. <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a></p>
+                <p class="source-note">Source: <a href="/about/">about the data</a></p>
               </div>
             </aside>
           </div>

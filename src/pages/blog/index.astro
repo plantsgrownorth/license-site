@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const title = 'Salary Guides & Data Breakdowns — StateWages Blog';
-const description = 'In-depth salary guides by occupation and state, built on official BLS data. No fluff, no surveys — just numbers and context.';
+const description = 'In-depth salary guides by occupation and state, built on the most current federal wage data. No fluff, no surveys — just numbers and context.';
 
 const postFiles = import.meta.glob('./*.md', { eager: true });
 const posts = Object.entries(postFiles).map(([path, mod]: [string, any]) => ({
@@ -19,7 +19,7 @@ const sorted = posts
     <div class="container">
       <span class="eyebrow">StateWages</span>
       <h1>Salary Guides</h1>
-      <p>Deep dives into occupation pay, state comparisons, and wage trends — all sourced from BLS data.</p>
+      <p>Deep dives into occupation pay, state comparisons, and wage trends — all from the most current official survey data.</p>
     </div>
   </div>
 

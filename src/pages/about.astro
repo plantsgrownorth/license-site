@@ -42,9 +42,9 @@ const description = "StateWages exists because every other salary site is either
           </p>
 
           <p>
-            The Bureau of Labor Statistics surveys about 1.1 million employers every year. Mandatory participation.
-            Consistent methodology going back to 1988. They publish the whole dataset for free, covering 800-plus
-            occupations across every state. I found it after about two hours of digging through bls.gov (not
+            The federal survey behind this data covers about 1.1 million employers every year. Mandatory participation.
+            Consistent methodology going back decades. The full dataset is public and free, covering 800-plus
+            occupations across every state. I found it after about two hours of digging through the source site (not
             a great website, for the record). The data was all there, just buried in Excel files with column names
             like A_PCT25 and H_MEDIAN that require cross-referencing a 40-page data dictionary to make sense of.
           </p>
@@ -54,23 +54,23 @@ const description = "StateWages exists because every other salary site is either
           <h2>What the data actually is</h2>
 
           <p>
-            Every number on this site comes from the BLS Occupational Employment and Wage Statistics program,
-            May 2024 release. That's the most recent data available right now. The next release (May 2025 data)
-            is scheduled for sometime in spring 2026, and I'll update the site within a few days of that coming out.
+            Every number on this site comes from the most current release of the federal Occupational Employment
+            and Wage Statistics program. I update the site within a few days whenever a new release drops (usually
+            once a year in spring).
           </p>
 
           <p>
-            I download the raw file from bls.gov, run it through a processing script, and generate a page for every
+            I download the raw file, run it through a processing script, and generate a page for every
             occupation-state combination that has enough observations to report. When the sample size for a
-            particular job in a particular state is too small, BLS suppresses the data and I show "N/A." That's not a
+            particular job in a particular state is too small, the survey suppresses the data and I show "N/A." That's not a
             bug. That's the data telling you there aren't enough observations to give you a number worth trusting,
             and I'd rather show nothing than show something misleading.
           </p>
 
           <p>
-            The tradeoff (and I want to be straight about this) is that BLS data is a snapshot. It reflects employer
-            survey responses from late 2023 and early 2024. Job markets move. If you're in a field that changed
-            a lot in the last year, treat these numbers as a floor, not a ceiling, and check recent job postings too.
+            The tradeoff (and I want to be straight about this) is that the data is a snapshot. It reflects employer
+            survey responses from the collection period. Job markets move. If you're in a field that changed
+            a lot recently, treat these numbers as a floor, not a ceiling, and check recent job postings too.
           </p>
 
           <h2>How to actually read a percentile</h2>
@@ -91,7 +91,7 @@ const description = "StateWages exists because every other salary site is either
 
           <p>
             A registered nurse in California earns a median of about $125,000. In Mississippi it's around $63,000.
-            Same license. Same job title. Same BLS occupation code. The state is doing almost all the work there,
+            Same license. Same job title. Same federal occupation code. The state is doing almost all the work there,
             and that's a real thing worth knowing before you take a job or move.
           </p>
 
@@ -111,9 +111,9 @@ const description = "StateWages exists because every other salary site is either
 
           <div class="about-note">
             <strong>If a number looks wrong:</strong> the most likely explanation is data suppression or a rounding
-            difference in how BLS reports certain fields. The raw source is always
-            <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a> and that's
-            the ground truth. If you find a genuine error in how I've processed the data, I want to know about it.
+            difference in how the source reports certain fields. The raw data lives at
+            <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">bls.gov/oes</a> (that's the only
+            place I'll name the survey by its official acronym). If you find a genuine error in how I've processed the data, I want to know about it.
           </div>
 
         </div>
@@ -123,7 +123,7 @@ const description = "StateWages exists because every other salary site is either
             <h3>Site facts</h3>
             <div class="info-row">
               <div class="info-icon">📊</div>
-              <div><div class="info-label">Data source</div><div class="info-value">BLS OEWS May 2024</div></div>
+              <div><div class="info-label">Data source</div><div class="info-value">Current release</div></div>
             </div>
             <div class="info-row">
               <div class="info-icon">🗂️</div>
@@ -146,8 +146,8 @@ const description = "StateWages exists because every other salary site is either
           <div class="info-block">
             <h3>Useful links</h3>
             <ul class="related-links">
-              <li><a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS Program</a></li>
-              <li><a href="https://www.bls.gov/ooh/" target="_blank" rel="noopener">BLS Occupational Outlook Handbook</a></li>
+              <li><a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">OEWS at bls.gov</a></li>
+              <li><a href="https://www.bls.gov/ooh/" target="_blank" rel="noopener">Occupational Outlook Handbook</a></li>
               <li><a href="/privacy-policy/">Privacy Policy</a></li>
             </ul>
           </div>
