@@ -27,7 +27,9 @@ const jsonLd = {
   description,
   datePublished: date,
   dateModified: lastUpdated ?? date,
+  author: { '@type': 'Organization', name: 'StateWages', url: 'https://statewages.com' },
   publisher: { '@type': 'Organization', name: 'StateWages', url: 'https://statewages.com' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://statewages.com${Astro.url.pathname}` },
 };
 ---
 
