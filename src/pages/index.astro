@@ -1,15 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
 import indexData from '../data/index.json';
 
-// which states actually have data (from the json files)
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
-const stateCount = indexData.states.length; // for later if we want to show count somewhere
 
-const title       = 'StateWages — Salary Data for Every Job in Every State';
-const description = 'Salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts from the most current federal occupational wage survey.';
+const title       = 'Salary by State & Occupation — StateWages';
+const description = 'Look up salary data by state or by job. 800+ occupations, all 50 states. Official survey data, free.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -22,58 +19,39 @@ const jsonLd = {
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
 
-  <!-- Hero -->
+  <!-- Minimal hero: find jobs and states first -->
   <section class="hero">
     <div class="container">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <span class="eyebrow">All 50 States · Free · Most current data</span>
-          <h1>What does that job pay<br/>in your state?</h1>
-          <p class="hero-lead">
-            Real salary data for 800+ occupations across all 50 states.
-            Not self-reported surveys. Not estimates. Official survey data,
-            organized so you can actually use it.
-          </p>
-          <div class="hero-actions">
-            <a href="#states" class="btn btn-primary btn-lg">Browse by State</a>
-            <a href="#occupations" class="btn btn-outline btn-lg">Browse by Occupation</a>
-          </div>
-        </div>
-        <div class="hero-stat-card">
-          <div class="hsc-row">
-            <span class="hsc-num">800+</span>
-            <span class="hsc-label">Occupations covered</span>
-          </div>
-          <div class="hsc-divider"></div>
-          <div class="hsc-row">
-            <span class="hsc-num">51</span>
-            <span class="hsc-label">States + DC</span>
-          </div>
-          <div class="hsc-divider"></div>
-          <div class="hsc-row">
-            <span class="hsc-num">Gov</span>
-            <span class="hsc-label">Official survey data</span>
-          </div>
-          <div class="hsc-divider"></div>
-          <div class="hsc-row">
-            <span class="hsc-num">Free</span>
-            <span class="hsc-label">No account required</span>
-          </div>
-        </div>
+      <h1 class="hero-title">Find salary by state or job</h1>
+      <p class="hero-one">Official wage data for 800+ occupations in all 50 states. Free, no signup.</p>
+
+      <div class="hero-search-wrap">
+        <label for="occ-search" class="visually-hidden">Search occupations</label>
+        <input
+          type="search"
+          id="occ-search"
+          class="hero-search"
+          placeholder="Search jobs (e.g. nurse, developer, teacher)"
+          autocomplete="off"
+          aria-describedby="search-hint"
+        />
+        <span id="search-hint" class="hero-search-hint">Type to filter the list below</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#states" class="btn btn-primary btn-lg">Browse by state</a>
+        <a href="#occupations" class="btn btn-outline btn-lg">Browse by occupation</a>
       </div>
     </div>
   </section>
 
-
-  <main>
+  <main id="main-content">
     <div class="container">
 
-      <!-- States -->
-      <section id="states" class="section">
-        <div class="section-heading">
-          <h2>Browse by State</h2>
-          <span class="section-count">{indexData.states.length} states</span>
-        </div>
+      <!-- States first -->
+      <section id="states" class="section section-states">
+        <h2 class="section-title">By state</h2>
+        <p class="section-desc">Pick a state to see median pay for every occupation.</p>
         <div class="state-grid">
           {indexData.states.map((s) => {
             const hasData = liveSlugs.has(s.slug);
@@ -92,84 +70,163 @@ const jsonLd = {
         </div>
       </section>
 
-      <!-- Occupations -->
-      <section id="occupations" class="section">
-        <div class="section-heading">
-          <h2>Browse by Occupation</h2>
-          <span class="section-count">{indexData.occupations.length} listed</span>
-        </div>
-        <div class="occ-grid">
+      <!-- Occupations with client-side filter -->
+      <section id="occupations" class="section section-occ">
+        <h2 class="section-title">By occupation</h2>
+        <p class="section-desc">Click any job to see pay in every state.</p>
+        <div id="occ-list" class="occ-grid">
           {indexData.occupations.map((occ) => (
-            <a href={`/salaries/${occ.slug}/`} class="occ-card">
-              <div class="occ-title">{occ.title}</div>
-              <div class="occ-code">SOC {occ.socCode}</div>
+            <a href={`/salaries/${occ.slug}/`} class="occ-card" data-occ-title={occ.title.toLowerCase()} data-occ-slug={occ.slug}>
+              <span class="occ-title">{occ.title}</span>
+              <span class="occ-code">SOC {occ.socCode}</span>
             </a>
           ))}
         </div>
+        <p id="occ-no-results" class="occ-no-results" hidden>No jobs match your search. Try different words.</p>
       </section>
 
       <div class="alert alert-info">
-        Figures use the most current federal occupational wage survey. The site is updated when new data is released. <a href="/about/">More about the data.</a>
+        Data from the most current federal occupational wage survey. <a href="/about/">About the data</a> · <a href="/blog/">Blog</a>
       </div>
 
     </div>
   </main>
 </BaseLayout>
 
+<script>
+  (function () {
+    const search = document.getElementById('occ-search');
+    const list = document.getElementById('occ-list');
+    const noResults = document.getElementById('occ-no-results');
+    if (!search || !list || !noResults) return;
+
+    const cards = list.querySelectorAll('[data-occ-title]');
+    function filter() {
+      const q = (search.value || '').trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const title = (card.getAttribute('data-occ-title') || '');
+        const show = !q || title.includes(q);
+        (card as HTMLElement).style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      noResults.hidden = visible > 0 || !q;
+    }
+    search.addEventListener('input', filter);
+    search.addEventListener('search', filter);
+  })();
+</script>
+
 <style>
-  /* Hero */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+
   .hero {
     background: var(--bg-inset);
     border-bottom: 1px solid var(--border);
-    padding: 4.5rem 0 3.5rem;
+    padding: 2.5rem 0 2rem;
   }
-
-  .hero-inner {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 3rem;
-    align-items: center;
+  .hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 0.4rem;
   }
-
-  .hero-text h1 { margin-bottom: 0.85rem; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.08; }
-  .hero-lead { font-size: 1.05rem; color: var(--text-muted); max-width: 480px; margin-bottom: 1.75rem; line-height: 1.7; }
-  .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-
-  .hero-stat-card {
+  .hero-one {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero-search-wrap {
+    max-width: 420px;
+    margin-bottom: 1.25rem;
+  }
+  .hero-search {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius);
     background: var(--white);
-    overflow: hidden;
-    min-width: 200px;
-    flex-shrink: 0;
   }
-  .hsc-row { padding: 1rem 1.4rem; }
-  .hsc-num { display: block; font-family: var(--font); font-size: 1.75rem; font-weight: 600; color: var(--primary); line-height: 1; margin-bottom: 0.15rem; }
-  .hsc-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-faint); font-weight: 500; }
-  .hsc-divider { height: 1px; background: var(--border); }
+  .hero-search:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .hero-search-hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    margin-top: 0.35rem;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
 
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    margin-bottom: 0.25rem;
+  }
+  .section-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .section-states { margin-bottom: 2.5rem; }
+  .section-occ { margin-bottom: 2rem; }
 
-  /* State grid – extend with coming-soon */
   .state-card--coming { opacity: 0.5; cursor: default; pointer-events: none; }
   .state-soon { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); margin-left: auto; }
 
-  /* Occupation grid */
-  .occ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+  .occ-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+  }
   .occ-card {
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 0.75rem 0.9rem;
+    padding: 0.65rem 0.85rem;
     text-decoration: none;
     display: block;
-    transition: border-color 0.12s;
+    transition: border-color 0.12s, background 0.12s;
   }
-  .occ-card:hover { border-color: var(--primary); }
-  .occ-title { font-weight: 500; font-size: 0.875rem; color: var(--primary); margin-bottom: 0.15rem; }
-  .occ-code { font-size: 0.72rem; color: var(--text-faint); font-family: var(--font); }
+  .occ-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .occ-title {
+    display: block;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--primary);
+    margin-bottom: 0.1rem;
+  }
+  .occ-code {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+  }
+  .occ-no-results {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 1rem 0;
+  }
 
-  @media (max-width: 900px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
-    .feature-list { grid-template-columns: 1fr; gap: 1.25rem; }
+  @media (max-width: 640px) {
+    .hero-actions { flex-direction: column; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
+    .occ-grid { grid-template-columns: 1fr; }
   }
 </style>

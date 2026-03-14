@@ -27,5 +27,8 @@ pnpm-debug.log*
 *.csv
 *.xlsx
 
+# generated at build (prebuild script)
+public/compare-data.json
+
 # jetbrains setting folder
 .idea/

@@ -100,9 +100,13 @@ if (type === 'state') {
         return (
           <div class="hub-layout">
             <div class="hub-main">
-              <div class="section-heading"><h2>All Occupations</h2><span class="section-count">{sorted.length} listed</span></div>
+              <div class="section-heading">
+                <h2>All Occupations</h2>
+                <span class="section-count">{sorted.length} listed</span>
+                <button type="button" class="btn btn-outline btn-sm export-csv" data-table="state-hub-table" aria-label="Export table as CSV">Export CSV</button>
+              </div>
               <div class="table-wrap">
-                <table class="data-table sortable">
+                <table class="data-table sortable" id="state-hub-table">
                   <thead>
                     <tr>
                       <th>Occupation</th>
@@ -161,9 +165,13 @@ if (type === 'state') {
                 </div>
               )}
 
-              <div class="section-heading"><h2>Salary by State</h2><span class="section-count">{sorted.length} states</span></div>
+              <div class="section-heading">
+                <h2>Salary by State</h2>
+                <span class="section-count">{sorted.length} states</span>
+                <button type="button" class="btn btn-outline btn-sm export-csv" data-table="occ-hub-table" aria-label="Export table as CSV">Export CSV</button>
+              </div>
               <div class="table-wrap">
-                <table class="data-table">
+                <table class="data-table" id="occ-hub-table">
                   <thead>
                     <tr>
                       <th>State</th>
@@ -322,6 +330,10 @@ if (type === 'state') {
 
   .source-note { font-size: 0.78rem; color: var(--text-faint); line-height: 1.55; margin: 0; }
 
+  .section-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .section-heading .export-csv { margin-left: auto; }
+  .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+
   @media (max-width: 900px) {
     .hub-layout { grid-template-columns: 1fr; }
     .hub-sidebar { position: static; }
@@ -332,3 +344,25 @@ if (type === 'state') {
     .nat-stat { border-bottom: 1px solid var(--border); }
   }
 </style>
+
+<script>
+  document.querySelectorAll('.export-csv').forEach((btn) => {
+    btn.addEventListener('click', function () {
+      const id = (this as HTMLButtonElement).getAttribute('data-table');
+      const table = id ? document.getElementById(id) : null;
+      if (!table || table.tagName !== 'TABLE') return;
+      const rows = table.querySelectorAll('tr');
+      const csvRows: string[] = [];
+      rows.forEach((tr) => {
+        const cells = tr.querySelectorAll('th, td');
+        csvRows.push([...cells].map((c) => `"${(c.textContent || '').trim().replace(/"/g, '""')}"`).join(','));
+      });
+      const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (id || 'export') + '.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+  });
+</script>

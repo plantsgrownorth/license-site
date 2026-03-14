@@ -16,7 +16,8 @@
   --white:         #ffffff;
   --header-bg:     #1a1a1a;
 
-  --font: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Fraunces', Georgia, serif;
 
   --radius:    4px;
   --radius-lg: 6px;
@@ -27,7 +28,42 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 16px; scroll-behavior: smooth; }
-/* was 15px for a bit, 16 reads better */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+/* Focus visible for keyboard users */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
 body {
   font-family: var(--font);
@@ -37,9 +73,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== Typography — same font, weight for hierarchy ===== */
+/* ===== Typography — distinctive headings ===== */
 h1, h2, h3, h4 {
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-weight: 600;
   line-height: 1.25;
   color: var(--text);
@@ -94,8 +130,8 @@ main { flex: 1; padding: 3rem 0 5rem; }
 }
 
 .site-logo {
-  font-family: var(--font);
-  font-size: 1.1rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--white);
   text-decoration: none;
@@ -149,7 +185,7 @@ main { flex: 1; padding: 3rem 0 5rem; }
 }
 
 .footer-logo {
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 600;
   color: var(--white);

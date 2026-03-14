@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import indexData from '../data/index.json';
+
+const title = 'Sitemap';
+const description = 'All states and occupations on StateWages.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-hero">
+    <div class="container">
+      <h1>Sitemap</h1>
+      <p>All salary pages: states and occupations.</p>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container sitemap-layout">
+      <section class="sitemap-section">
+        <h2>By state</h2>
+        <ul class="sitemap-list">
+          {indexData.states.map((s) => (
+            <li><a href={`/salaries/${s.slug}/`}>{s.name}</a></li>
+          ))}
+        </ul>
+      </section>
+      <section class="sitemap-section">
+        <h2>By occupation</h2>
+        <ul class="sitemap-list">
+          {indexData.occupations.map((o) => (
+            <li><a href={`/salaries/${o.slug}/`}>{o.title}</a></li>
+          ))}
+        </ul>
+      </section>
+      <section class="sitemap-section">
+        <h2>Tools & pages</h2>
+        <ul class="sitemap-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/compare-states/">Compare two states</a></li>
+          <li><a href="/compare-occupations/">Compare two occupations</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/glossary/">Glossary</a></li>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .sitemap-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0 4rem;
+  }
+  .sitemap-section h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+  .sitemap-list { list-style: none; padding: 0; margin: 0; }
+  .sitemap-list li { margin-bottom: 0.35rem; }
+  .sitemap-list a { text-decoration: none; font-size: 0.9rem; }
+  .sitemap-list a:hover { text-decoration: underline; }
+</style>

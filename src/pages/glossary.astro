@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Glossary';
+const description = 'Definitions of salary and wage terms used on StateWages.';
+
+const terms = [
+  { term: 'Median wage', def: 'The middle value when all wages are sorted from lowest to highest. Half of workers earn less than the median, half earn more. Often more representative than the average (mean) because it is not skewed by very high or very low earners.' },
+  { term: 'Mean wage', def: 'The average: total wages divided by number of workers. Can be pulled up or down by a few very high or very low salaries.' },
+  { term: '10th / 25th / 75th / 90th percentile', def: 'At the 10th percentile, 10% of workers earn less and 90% earn more. At the 90th, 90% earn less and 10% earn more. These show the spread of pay in an occupation or area.' },
+  { term: 'Annual vs hourly', def: 'We show annual wages (yearly salary). The underlying survey also reports hourly wages; annual figures assume full-time work (2,080 hours per year).' },
+  { term: 'SOC code', def: 'Standard Occupational Classification. A federal system used to group jobs into occupations. Our data follows SOC so it matches official Bureau of Labor Statistics and other government sources.' },
+  { term: 'Most current data', def: 'We use the latest release of the federal occupational wage survey available when the site was last updated. Release dates vary by source; we note the data year where relevant.' },
+  { term: 'Employment', def: 'The number of people employed in that occupation in that state (or nationally) in the survey. Used for context, not for pay calculations.' },
+  { term: 'Location quotient', def: 'A measure of how concentrated an occupation is in a state compared to the nation. Above 1.0 means the state has a higher share of that job than the national average.' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Reference</span>
+      <h1>Glossary</h1>
+      <p>Definitions of terms we use on the site.</p>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container glossary-wrap">
+      <dl class="glossary-list">
+        {terms.map(({ term, def }) => (
+          <div class="glossary-item">
+            <dt>{term}</dt>
+            <dd>{def}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="glossary-more"><a href="/about/">About the data</a> for sources and methodology.</p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .glossary-wrap { padding: 2rem 0 4rem; max-width: 640px; }
+  .glossary-list { margin: 0; }
+  .glossary-item { margin-bottom: 1.5rem; }
+  .glossary-item dt {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .glossary-item dd { margin: 0; font-size: 0.9rem; line-height: 1.65; color: var(--text-muted); }
+  .glossary-more { font-size: 0.9rem; margin-top: 2rem; }
+</style>

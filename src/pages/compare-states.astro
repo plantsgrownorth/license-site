@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import indexData from '../data/index.json';
+
+const title = 'Compare Salaries: Two States';
+const description = 'Compare median wages for the same occupations in two states side by side.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Compare</span>
+      <h1>Compare two states</h1>
+      <p>See median pay for the same jobs in two states side by side.</p>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container">
+      <div class="compare-form">
+        <label for="state-a">State A</label>
+        <select id="state-a" class="compare-select">
+          <option value="">Select state</option>
+          {indexData.states.map((s) => (
+            <option value={s.slug}>{s.name}</option>
+          ))}
+        </select>
+        <label for="state-b">State B</label>
+        <select id="state-b" class="compare-select">
+          <option value="">Select state</option>
+          {indexData.states.map((s) => (
+            <option value={s.slug}>{s.name}</option>
+          ))}
+        </select>
+        <button type="button" id="compare-btn" class="btn btn-primary">Compare</button>
+      </div>
+
+      <div id="compare-result" class="compare-result" hidden>
+        <div class="compare-result-header">
+          <h2 id="compare-title">State A vs State B</h2>
+          <button type="button" id="export-csv" class="btn btn-outline btn-sm">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="compare-table">
+            <thead>
+              <tr>
+                <th>Occupation</th>
+                <th class="num-col" id="col-a">State A</th>
+                <th class="num-col" id="col-b">State B</th>
+                <th class="num-col">Difference</th>
+              </tr>
+            </thead>
+            <tbody id="compare-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="compare-note">Data loads from the most current federal wage survey. <a href="/about/">About the data</a>.</p>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  (function () {
+    const stateA = document.getElementById('state-a');
+    const stateB = document.getElementById('state-b');
+    const compareBtn = document.getElementById('compare-btn');
+    const result = document.getElementById('compare-result');
+    const titleEl = document.getElementById('compare-title');
+    const colA = document.getElementById('col-a');
+    const colB = document.getElementById('col-b');
+    const tbody = document.getElementById('compare-tbody');
+    const exportBtn = document.getElementById('export-csv');
+
+    let data = null;
+
+    async function load() {
+      if (data) return data;
+      const res = await fetch('/compare-data.json');
+      data = await res.json();
+      return data;
+    }
+
+    function fmt(n) {
+      if (n == null) return '—';
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+    }
+
+    compareBtn.addEventListener('click', async function () {
+      const a = stateA?.value;
+      const b = stateB?.value;
+      if (!a || !b || a === b) return;
+      const d = await load();
+      const stA = d.states[a];
+      const stB = d.states[b];
+      if (!stA || !stB) return;
+
+      const occMapA = new Map(stA.occupations.map((o) => [o.slug, o]));
+      const occMapB = new Map(stB.occupations.map((o) => [o.slug, o]));
+      const allSlugs = new Set([...occMapA.keys(), ...occMapB.keys()]);
+      const rows = [...allSlugs]
+        .map((slug) => {
+          const oA = occMapA.get(slug);
+          const oB = occMapB.get(slug);
+          const title = (oA?.title || oB?.title || slug);
+          const medA = oA?.median ?? null;
+          const medB = oB?.median ?? null;
+          let diff = null;
+          if (medA != null && medB != null) diff = medB - medA;
+          return { slug, title, medA, medB, diff };
+        })
+        .sort((x, y) => (x.title || '').localeCompare(y.title || ''));
+
+      titleEl.textContent = `${stA.name} vs ${stB.name}`;
+      colA.textContent = stA.name;
+      colB.textContent = stB.name;
+      tbody.innerHTML = rows
+        .map(
+          (r) =>
+            `<tr><td><a href="/salaries/${a}/${r.slug}/">${r.title}</a></td><td class="num-col">${fmt(r.medA)}</td><td class="num-col">${fmt(r.medB)}</td><td class="num-col">${r.diff != null ? (r.diff >= 0 ? '+' : '') + fmt(r.diff) : '—'}</td></tr>`
+        )
+        .join('');
+      result.hidden = false;
+
+      if (exportBtn) {
+        exportBtn.onclick = () => {
+          const headers = ['Occupation', stA.name, stB.name, 'Difference'];
+          const csvRows = [headers.join(',')];
+          rows.forEach((r) => {
+            csvRows.push([r.title, r.medA ?? '', r.medB ?? '', r.diff ?? ''].map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','));
+          });
+          const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `salaries-${stateA.value}-vs-${stateB.value}.csv`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        };
+      }
+    });
+  })();
+</script>
+
+<style>
+  .compare-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .compare-form label { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.25rem; display: block; }
+  .compare-select {
+    min-width: 180px;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+  }
+  .compare-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .compare-result-header h2 { margin: 0; font-size: 1.25rem; }
+  .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+  .compare-result { margin-bottom: 2rem; }
+  .compare-note { font-size: 0.85rem; color: var(--text-muted); }
+  .num-col { text-align: right; }
+</style>

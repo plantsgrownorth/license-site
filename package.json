@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "prebuild": "node scripts/generate-compare-data.js",
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
