@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const title = 'Salary Guides & Data Breakdowns — StateWages Blog';
-const description = 'In-depth salary guides by occupation and state, built on the most current federal wage data. No fluff, no surveys — just numbers and context.';
+const title = 'Salary Guides & Data Breakdowns: StateWages Blog';
+const description = 'In-depth salary guides by occupation and state, built on the most current federal wage data. No fluff, no surveys, just numbers and context.';
 
 const postFiles = import.meta.glob<{ frontmatter: { title?: string; description?: string; date?: string } }>('./*.md', { eager: true });
 const posts = Object.entries(postFiles)
@@ -22,7 +22,7 @@ const postCount = sorted.length;
     <div class="container">
       <span class="eyebrow">StateWages</span>
       <h1>Salary Guides</h1>
-      <p>Deep dives into occupation pay, state comparisons, and wage trends — all from the most current official survey data.</p>
+      <p>Deep dives into occupation pay, state comparisons, and wage trends, all from the most current official survey data.</p>
     </div>
   </div>
 

@@ -30,7 +30,7 @@ function pctDiff(val: number, ref: number) {
   const d = Math.round(((val - ref) / ref) * 100);
   return d >= 0 ? `+${d}%` : `${d}%`;
 }
-// function fmtShort(n) { return n == null ? '—' : '$' + (n/1000).toFixed(0) + 'k'; }  ended up not using
+// function fmtShort(n) { return n == null ? 'n/a' : '$' + (n/1000).toFixed(0) + 'k'; }  ended up not using
 
 const { type, data } = Astro.props;
 
@@ -40,7 +40,7 @@ let title = '', description = '', jsonLd: any;
 if (type === 'state') {
   const occs = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
   const top5  = occs.slice(0, 5).map((o: any) => o.title).join(', ');
-  title       = `Salaries in ${data.state} — Median Pay by Occupation`;
+  title       = `Salaries in ${data.state}: Median Pay by Occupation`;
   description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Nurse, teacher, developer salaries and more. Official survey data.`;
   jsonLd      = [
     { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://statewages.com/salaries/${data.stateSlug}/` },
@@ -221,10 +221,10 @@ if (type === 'state') {
               {data.typicalEducation && (
                 <div class="info-block">
                   <h3>Education & Training</h3>
-                  <div class="info-row"><div class="info-icon">🎓</div><div><div class="info-label">Typical Education</div><div class="info-value">{data.typicalEducation}</div></div></div>
-                  {data.workExperience && data.workExperience !== 'None' && <div class="info-row"><div class="info-icon">💼</div><div><div class="info-label">Work Experience</div><div class="info-value">{data.workExperience}</div></div></div>}
-                  {data.onJobTraining && data.onJobTraining !== 'None' && <div class="info-row"><div class="info-icon">🔧</div><div><div class="info-label">On-the-Job Training</div><div class="info-value">{data.onJobTraining}</div></div></div>}
-                  {data.jobOutlookPercent != null && <div class="info-row"><div class="info-icon">📈</div><div><div class="info-label">10-Year Job Growth</div><div class="info-value">{data.jobOutlookPercent}% · {data.jobOutlookLabel}</div></div></div>}
+                  <div class="info-row"><div class="info-icon" aria-hidden="true"></div><div><div class="info-label">Typical Education</div><div class="info-value">{data.typicalEducation}</div></div></div>
+                  {data.workExperience && data.workExperience !== 'None' && <div class="info-row"><div class="info-icon" aria-hidden="true"></div><div><div class="info-label">Work Experience</div><div class="info-value">{data.workExperience}</div></div></div>}
+                  {data.onJobTraining && data.onJobTraining !== 'None' && <div class="info-row"><div class="info-icon" aria-hidden="true"></div><div><div class="info-label">On-the-Job Training</div><div class="info-value">{data.onJobTraining}</div></div></div>}
+                  {data.jobOutlookPercent != null && <div class="info-row"><div class="info-icon" aria-hidden="true"></div><div><div class="info-label">10-Year Job Growth</div><div class="info-value">{data.jobOutlookPercent}% · {data.jobOutlookLabel}</div></div></div>}
                 </div>
               )}
               <div class="info-block">

@@ -129,7 +129,7 @@ const bar = {
 
           <!-- Salary Range Bar -->
           <div class="section-block">
-            <h2>Salary Range — 10th to 90th Percentile</h2>
+            <h2>Salary Range: 10th to 90th Percentile</h2>
             <div class="range-bar-wrap">
               <div class="range-bar">
                 <div class="range-fill" style={`left: 0%; width: 100%;`}></div>
@@ -180,7 +180,7 @@ const bar = {
                     <tr class="current-state-row">
                       <td><strong>{stateData.state} (current)</strong></td>
                       <td class="num-col"><strong>{fmt(occ.medianAnnual)}</strong></td>
-                      <td class="num-col">—</td>
+                      <td class="num-col">n/a</td>
                     </tr>
                     {compStates.map((s: any) => {
                       const d = Math.round(((s.medianAnnual - occ.medianAnnual) / occ.medianAnnual) * 100);
@@ -261,20 +261,20 @@ const bar = {
           <div class="info-block">
             <h3>At a Glance</h3>
             <div class="info-row">
-              <div class="info-icon">📊</div>
+              <div class="info-icon" aria-hidden="true"></div>
               <div><div class="info-label">Median Annual</div><div class="info-value">{fmt(occ.medianAnnual)}</div></div>
             </div>
             <div class="info-row">
-              <div class="info-icon">⌛</div>
+              <div class="info-icon" aria-hidden="true"></div>
               <div><div class="info-label">Median Hourly</div><div class="info-value">{occ.medianHourly ? `$${occ.medianHourly.toFixed(2)}` : 'N/A'}</div></div>
             </div>
             <div class="info-row">
-              <div class="info-icon">👥</div>
+              <div class="info-icon" aria-hidden="true"></div>
               <div><div class="info-label">Employment</div><div class="info-value">{fmtNum(occ.totalEmployment)}</div></div>
             </div>
             {occ.locationQuotient != null && (
               <div class="info-row">
-                <div class="info-icon">📍</div>
+                <div class="info-icon" aria-hidden="true"></div>
                 <div>
                   <div class="info-label">Location Quotient</div>
                   <div class="info-value">{occ.locationQuotient.toFixed(2)}</div>
@@ -290,12 +290,12 @@ const bar = {
             <div class="info-block">
               <h3>Education Required</h3>
               <div class="info-row">
-                <div class="info-icon">🎓</div>
+                <div class="info-icon" aria-hidden="true"></div>
                 <div><div class="info-label">Typical Entry</div><div class="info-value">{occHub.typicalEducation}</div></div>
               </div>
               {occHub.jobOutlookPercent != null && (
                 <div class="info-row">
-                  <div class="info-icon">📈</div>
+                  <div class="info-icon" aria-hidden="true"></div>
                   <div><div class="info-label">10-Year Growth</div><div class="info-value">{occHub.jobOutlookPercent}%</div></div>
                 </div>
               )}
@@ -312,7 +312,7 @@ const bar = {
           </div>
 
           <div class="verified-badge">
-            <span class="verified-icon">📅</span>
+            <span class="verified-icon" aria-hidden="true"></span>
             <div>
               <div class="verified-label">Data Release</div>
               <div class="verified-date">Current release</div>

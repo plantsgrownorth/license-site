@@ -86,7 +86,7 @@ const description = 'Compare median wages for two occupations across all states 
     }
 
     function fmt(n) {
-      if (n == null) return '—';
+      if (n == null) return 'n/a';
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
     }
 
@@ -121,7 +121,7 @@ const description = 'Compare median wages for two occupations across all states 
       tbody.innerHTML = rows
         .map(
           (r) =>
-            `<tr><td><a href="/salaries/${r.stateSlug}/">${r.stateName}</a></td><td class="num-col">${fmt(r.medA)}</td><td class="num-col">${fmt(r.medB)}</td><td class="num-col">${r.diff != null ? (r.diff >= 0 ? '+' : '') + fmt(r.diff) : '—'}</td></tr>`
+            `<tr><td><a href="/salaries/${r.stateSlug}/">${r.stateName}</a></td><td class="num-col">${fmt(r.medA)}</td><td class="num-col">${fmt(r.medB)}</td><td class="num-col">${r.diff != null ? (r.diff >= 0 ? '+' : '') + fmt(r.diff) : 'n/a'}</td></tr>`
         )
         .join('');
       result.hidden = false;
