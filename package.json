@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
-    "import-csv": "node scripts/csv-to-json.js"
+    "import-csv": "node scripts/csv-to-json.js",
+    "publish-next": "node scripts/publish-next-post.js"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.1",
