@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import categoriesJson from '../../../data/occupation-categories.json';
+const categories = categoriesJson as Record<string, string>;
 
 export async function getStaticPaths() {
   const stateFiles  = import.meta.glob('../../../data/states/*.json',      { eager: true });
@@ -41,15 +43,34 @@ let title = '', description = '', jsonLd: any;
 if (type === 'state') {
   const occs = [...data.occupations].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0));
   const top5  = occs.slice(0, 5).map((o: any) => o.title).join(', ');
-  title       = `Average Salaries in ${data.state} by Occupation`;
-  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Includes ${top5} and more. Most current survey data.`;
-  jsonLd      = { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://statewages.com/salaries/${data.stateSlug}/` };
+  title       = `Salaries in ${data.state} — Median Pay by Occupation`;
+  description = `Median and mean wages for ${data.occupations.length}+ occupations in ${data.state}. Nurse, teacher, developer salaries and more. Official survey data.`;
+  jsonLd      = [
+    { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description, url: `https://statewages.com/salaries/${data.stateSlug}/` },
+    { '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement: [
+      { '@type':'ListItem', position: 1, name: 'Home', item: 'https://statewages.com/' },
+      { '@type':'ListItem', position: 2, name: 'States', item: 'https://statewages.com/#states' },
+      { '@type':'ListItem', position: 3, name: data.state, item: `https://statewages.com/salaries/${data.stateSlug}/` },
+    ] },
+  ];
 } else {
   const topStates = [...data.states].sort((a: any, b: any) => (b.medianAnnual ?? 0) - (a.medianAnnual ?? 0)).slice(0, 3).map((s: any) => s.state).join(', ');
   title       = `${data.title} Salary by State`;
   description = `${data.title} median salary: ${fmt(data.national?.medianAnnual)} nationally. Highest-paying states: ${topStates}. Full state-by-state breakdown, most current data.`;
+  const breadcrumbList = type === 'occupation'
+    ? { '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement: [
+        { '@type':'ListItem', position: 1, name: 'Home', item: 'https://statewages.com/' },
+        { '@type':'ListItem', position: 2, name: 'Occupations', item: 'https://statewages.com/#occupations' },
+        { '@type':'ListItem', position: 3, name: data.title, item: `https://statewages.com/salaries/${data.slug}/` },
+      ] }
+    : { '@context':'https://schema.org', '@type':'BreadcrumbList', itemListElement: [
+        { '@type':'ListItem', position: 1, name: 'Home', item: 'https://statewages.com/' },
+        { '@type':'ListItem', position: 2, name: 'States', item: 'https://statewages.com/#states' },
+        { '@type':'ListItem', position: 3, name: data.state, item: `https://statewages.com/salaries/${data.stateSlug}/` },
+      ] };
   jsonLd      = [
     { '@context':'https://schema.org', '@type':'CollectionPage', name: title, description },
+    breadcrumbList,
     { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: [
       { '@type':'Question', name:`What is the average ${data.title} salary?`, acceptedAnswer:{ '@type':'Answer', text:`The national median ${data.title} salary is ${fmt(data.national?.medianAnnual)} per year, with a mean of ${fmt(data.national?.meanAnnual)}.` } },
       { '@type':'Question', name:`Which state pays ${data.title}s the most?`, acceptedAnswer:{ '@type':'Answer', text:`${[...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.state} has the highest median ${data.title} salary at ${fmt([...data.states].sort((a:any,b:any)=>(b.medianAnnual??0)-(a.medianAnnual??0))[0]?.medianAnnual)} per year.` } },
@@ -78,10 +99,11 @@ if (type === 'state') {
         </>
       ) : (
         <>
-          <span class="eyebrow">SOC {data.socCode} · Most current data</span>
+          <span class="eyebrow">{categories[data.slug] || 'salary'} · SOC {data.socCode}</span>
           <h1>{data.title} Salary by State</h1>
           <p>National median: <strong>{fmt(data.national?.medianAnnual)}/yr</strong> · {fmtNum(data.national?.totalEmployment)} employed nationally</p>
           <div class="page-hero-meta">
+            <span class="badge">{categories[data.slug] || 'job'}</span>
             <span class="badge">{data.states.length} states</span>
             {data.typicalEducation && <span class="badge">{data.typicalEducation}</span>}
             {data.jobOutlookLabel && <span class="badge">{data.jobOutlookPercent}% growth · {data.jobOutlookLabel}</span>}
@@ -91,7 +113,7 @@ if (type === 'state') {
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <div class="container">
 
       {/* ── STATE HUB ── */}

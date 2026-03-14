@@ -1,26 +1,26 @@
-/* ===== Design System — simple, one font ===== */
+/* ===== Design System — warm, human, accessible ===== */
 :root {
-  --bg:            #f8f9f8;
-  --bg-alt:        #eef0ee;
-  --bg-inset:      #e6e8e6;
-  --border:        #d8dbd6;
-  --border-dark:   #b8bdb5;
-  --text:          #1a1a1a;
-  --text-muted:    #5c5c5c;
-  --text-faint:    #8a8a8a;
-  --primary:       #1a4d3a;
-  --primary-dark:  #0f3326;
-  --primary-light: #e6f0ec;
-  --accent:        #a64a00;
-  --accent-light:  #fdf0e6;
+  --bg:            #faf8f5;
+  --bg-alt:        #f0ede8;
+  --bg-inset:      #e8e4de;
+  --border:        #ddd8d0;
+  --border-dark:   #c4beb4;
+  --text:          #2c2825;
+  --text-muted:    #5c5650;
+  --text-faint:    #8a837a;
+  --primary:       #256f5c;
+  --primary-dark:  #1a5546;
+  --primary-light: #e8f2ef;
+  --accent:        #c17d3a;
+  --accent-light:  #fdf4eb;
   --white:         #ffffff;
-  --header-bg:     #1a1a1a;
+  --header-bg:     #2c2825;
 
-  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Fraunces', Georgia, serif;
+  --font: 'Figtree', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Syne', system-ui, sans-serif;
 
-  --radius:    4px;
-  --radius-lg: 6px;
+  --radius:    6px;
+  --radius-lg: 10px;
   --max-width: 1100px;
 }
 
