@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Electrician Salary by State: What Skilled Trades Actually Pay"
 description: "Electricians earn $62,350 median nationally, but top $88K in Illinois and $80K in Oregon. Full state-by-state breakdown plus why demand is surging."
-date: "2026-03-13"
+date: "2025-10-01"
 ---
 
 A 22-year-old kid named Bowman in Newport News, Virginia was about to apply to four-year colleges when a family friend talked him into an electrical apprenticeship instead. He started at $42,000 his first year, took classes two nights a week at the local IBEW chapter, and expects to make around $71,000 when he finishes his journeyman certification this summer. No student debt. He told Fortune the work feels like playing with "adult Legos."

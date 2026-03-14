@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Police Officer Salary by State: What Cops Earn in Every State"
 description: "Police officers earn a $79,320 mean salary nationally, but pay ranges from $45K in Mississippi to $112K in California. Full state breakdown plus the staffing crisis."
-date: "2026-03-14"
+date: "2025-11-18"
 ---
 
 My neighbor is a retired Palo Alto PD sergeant. We talk over the fence sometimes, usually about nothing, but last summer I asked him what he thought about the staffing numbers I'd been seeing in the news. He laughed. Not a happy laugh. He said when he started in the early 2000s there were lines of people waiting to test into Bay Area departments. Now his old unit can't fill positions even at $120K base. His son, who he figured would follow him into the job, went into tech sales instead.

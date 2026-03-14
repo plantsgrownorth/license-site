@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Pharmacist Salary by State: A Six-Figure Job That's Changing Fast"
 description: "Pharmacists earn a $137,480 median salary nationally, but the retail pharmacy crisis is reshaping the profession. Full state-by-state data plus what's really happening behind the counter."
-date: "2026-03-14"
+date: "2025-12-09"
 ---
 
 The Rite Aid on El Camino near my house closed last year. Then another one a mile south of it. Then the Walgreens on University Ave. All within about eight months. My wife went to pick up a prescription one afternoon and found a sign on the door that said something like "this location is permanently closed, your prescriptions have been transferred to..." with an address fifteen minutes away.

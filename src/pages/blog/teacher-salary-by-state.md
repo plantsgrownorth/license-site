@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Teacher Salary by State: Who's Paying Educators What They're Worth"
 description: "Teachers earn $47K in Mississippi and $92K in New York. See every state's average teacher pay, how it compares after cost of living, and which states are raising pay."
-date: "2026-03-13"
+date: "2025-08-12"
 ---
 
 Mississippi's legislature has spent the past two weeks fighting over a teacher pay raise, and honestly it's been embarrassing to watch. The House passed a $5,000 raise. Senate killed it. Both chambers revived their proposals by grafting them onto unrelated bills about school counselors, which is the kind of thing that sounds made up but isn't. As I write this, the Senate has countered with $6,000 spread over three years (do the math: that's $2,000 a year) and the two sides are still publicly blaming each other while 4,000 teaching positions sit empty across the state.

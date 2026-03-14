@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "The Highest-Paying Jobs in Every State"
 description: "Doctors and surgeons top the list almost everywhere, but the real story is what comes after them. State-by-state data on the best-paying jobs you can actually get."
-date: "2026-03-14"
+date: "2026-01-28"
 ---
 
 I'll save you the suspense: if you look up the single highest-paying occupation in any given state, it's almost always a doctor. Surgeons, anesthesiologists, cardiologists, orthodontists. The federal survey doesn't even publish exact salaries for a lot of these because they exceed the reportable ceiling ($239,200+). So yeah, doctors make the most money. You knew that. I knew that. Not very helpful.

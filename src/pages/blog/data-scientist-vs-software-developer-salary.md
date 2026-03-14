@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Data Scientist vs. Software Developer Salary: Which Tech Career Pays More by State?"
 description: "Software developers earn $133K median while data scientists earn $113K, but the real picture is more complicated. Side-by-side comparison across all 50 states."
-date: "2026-03-14"
+date: "2026-02-18"
 ---
 
 A friend of mine switched from software engineering to data science about three years ago. He was at a mid-size SaaS company in San Francisco, making around $185K total comp as a senior engineer, and he took a data science role at a Series B startup for $160K because he thought the work would be more interesting. He told me recently he regrets it a little. Not because the work is bad but because the engineer track at his old company would have him at $220K+ by now, and the data science career ladder at his new place is muddier. He can't tell where the ceiling is.

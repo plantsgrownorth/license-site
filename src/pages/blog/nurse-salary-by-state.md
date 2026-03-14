@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Nurse Salary by State: Where RNs Actually Make the Most Money"
 description: "The average RN earns about $99,840, but pay ranges from $66K to $149K depending on your state. See the full breakdown and which states pay best after cost of living."
-date: "2026-03-13"
+date: "2025-09-03"
 ---
 
 I've read probably thirty "nurse salary by state" articles in the past week. They're all the same. California is number one, here's a table sorted from highest to lowest, maybe a paragraph about cost of living tacked on at the end like an afterthought. Useless. So I pulled the latest federal wage data myself, cross-checked it against a few other sources, and tried to write something that actually helps if you're a working nurse trying to figure out where your money goes furthest.

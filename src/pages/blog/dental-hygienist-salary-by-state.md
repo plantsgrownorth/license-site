@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Dental Hygienist Salary by State: One of Healthcare's Best-Kept Secrets"
 description: "Dental hygienists earn $94,260 median with just an associate's degree. See every state's pay, why the job is booming, and how it compares to nursing and other healthcare careers."
-date: "2026-03-14"
+date: "2026-01-07"
 ---
 
 My dental hygienist is the one who told me about this job's economics, actually. I was sitting in the chair at my dentist's office in Palo Alto last fall getting a cleaning, and we were making small talk about the site (she'd seen it on my insurance form or something). I mentioned I was writing salary articles and she said "do dental hygienists, nobody knows how good the money is." She works three and a half days a week, she's home by 3 on most days, and she's making over $110,000 in the Bay Area. With an associate's degree.

@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Truck Driver Salary by State: Is the Pay Worth the Miles?"
 description: "The median heavy truck driver earns $57,440 nationally, but pay ranges from $44K in Hawaii to $71K in Delaware. State-by-state data plus the truth about the driver shortage."
-date: "2026-03-14"
+date: "2025-10-28"
 ---
 
 I got stuck behind a Walmart truck on 101 last week for about twenty minutes between Palo Alto and Mountain View. Bumper-to-bumper, me getting annoyed, the usual. Then I looked up what that driver was probably making and it changed my attitude a little. Walmart's private fleet pays its drivers around $86,000 on average. That's better than what most teachers earn, better than starting [police officers](/salaries/police-and-sheriffs-patrol-officers/) in half the states I've covered on this site. The guy in that cab was probably out-earning a lot of the people in the cars around him.
