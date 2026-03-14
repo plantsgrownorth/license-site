@@ -1,26 +1,26 @@
-/* ===== Design System — warm, human, accessible ===== */
+/* ===== Design System — clean, neutral, easy to use ===== */
 :root {
-  --bg:            #faf8f5;
-  --bg-alt:        #f0ede8;
-  --bg-inset:      #e8e4de;
-  --border:        #ddd8d0;
-  --border-dark:   #c4beb4;
-  --text:          #2c2825;
-  --text-muted:    #5c5650;
-  --text-faint:    #8a837a;
-  --primary:       #256f5c;
-  --primary-dark:  #1a5546;
-  --primary-light: #e8f2ef;
-  --accent:        #c17d3a;
-  --accent-light:  #fdf4eb;
+  --bg:            #f5f5f6;
+  --bg-alt:        #ebebed;
+  --bg-inset:      #e0e1e4;
+  --border:        #d1d3d6;
+  --border-dark:   #a8abb0;
+  --text:          #1c1e21;
+  --text-muted:    #4e5258;
+  --text-faint:    #7a7f86;
+  --primary:       #1a5fb4;
+  --primary-dark:  #134d8f;
+  --primary-light: #e8f0fa;
+  --accent:        #c64600;
+  --accent-light:  #fef2ee;
   --white:         #ffffff;
-  --header-bg:     #2c2825;
+  --header-bg:     #1c1e21;
 
-  --font: 'Figtree', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Syne', system-ui, sans-serif;
+  --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-heading: var(--font);
 
   --radius:    6px;
-  --radius-lg: 10px;
+  --radius-lg: 8px;
   --max-width: 1100px;
 }
 
@@ -73,11 +73,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== Typography — distinctive headings ===== */
+/* ===== Typography ===== */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.3;
   color: var(--text);
 }
 

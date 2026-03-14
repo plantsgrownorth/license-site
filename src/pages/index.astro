@@ -1,13 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import indexData from '../data/index.json';
-import categoriesJson from '../data/occupation-categories.json';
 
-const categories = categoriesJson as Record<string, string>;
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
 
-const allCategories = [...new Set(Object.values(categories))].sort();
 const title       = 'Salary by State & Job — Wages for Every Occupation in Every State';
 const description = 'Find salary data by state or by job title. Nurse, teacher, developer, and 800+ more occupations in all 50 states. Official wage survey data, free.';
 
@@ -17,38 +14,18 @@ const jsonLd = {
   name: 'StateWages',
   url: 'https://statewages.com',
   description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: 'https://statewages.com/#occupations?q={search_term}' },
-    'query-input': 'required name=search_term',
-  },
 };
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
 
-  <!-- Minimal hero: find jobs and states first -->
   <section class="hero">
     <div class="container">
       <h1 class="hero-title">See what any job pays in any state</h1>
-      <p class="hero-one">Real wage data for nurses, teachers, developers, and 800+ other jobs in all 50 states. No signup, no surveys—just the numbers.</p>
-
-      <div class="hero-search-wrap">
-        <label for="occ-search" class="visually-hidden">Search occupations</label>
-        <input
-          type="search"
-          id="occ-search"
-          class="hero-search"
-          placeholder="Search jobs (e.g. nurse, developer, teacher)"
-          autocomplete="off"
-          aria-describedby="search-hint"
-        />
-        <span id="search-hint" class="hero-search-hint">Type to filter the list below</span>
-      </div>
-
+      <p class="hero-one">Real wage data for 800+ jobs in all 50 states. No signup—just pick a state or search for a job below.</p>
       <div class="hero-actions">
-        <a href="#states" class="btn btn-primary btn-lg">Pick a state</a>
-        <a href="#occupations" class="btn btn-outline btn-lg">Pick a job</a>
+        <a href="#states" class="btn btn-primary btn-lg">Browse by state</a>
+        <a href="#occupations" class="btn btn-outline btn-lg">Browse by job</a>
       </div>
     </div>
   </section>
@@ -56,10 +33,9 @@ const jsonLd = {
   <main id="main-content">
     <div class="container">
 
-      <!-- States first -->
       <section id="states" class="section section-states" aria-labelledby="states-heading">
         <h2 id="states-heading" class="section-title">By state</h2>
-        <p class="section-desc">Pick a state to see median pay for every occupation.</p>
+        <p class="section-desc">Click a state to see median pay for every occupation.</p>
         <div class="state-grid">
           {indexData.states.map((s) => {
             const hasData = liveSlugs.has(s.slug);
@@ -78,38 +54,34 @@ const jsonLd = {
         </div>
       </section>
 
-      <!-- Occupations with client-side filter -->
       <section id="occupations" class="section section-occ" aria-labelledby="occ-heading">
-        <h2 id="occ-heading" class="section-title">By occupation</h2>
-        <p class="section-desc">Click any job to see pay in every state. Filter by type below.</p>
-        <div class="category-filter" role="group" aria-label="Filter jobs by category">
-          <span class="category-filter-label">Show:</span>
-          <select id="category-select" class="category-select" aria-label="Filter by job category">
-            <option value="">All jobs</option>
-            {allCategories.map((cat) => (
-              <option value={cat}>{cat}</option>
-            ))}
-          </select>
+        <h2 id="occ-heading" class="section-title">By job</h2>
+        <p class="section-desc">Search or scroll. Click any job to see pay in every state.</p>
+        <div class="occ-search-wrap">
+          <label for="occ-search" class="occ-search-label">Search jobs</label>
+          <input
+            type="search"
+            id="occ-search"
+            class="occ-search-input"
+            placeholder="e.g. nurse, teacher, electrician, developer"
+            autocomplete="off"
+            aria-describedby="occ-results-desc"
+          />
+          <span id="occ-results-desc" class="occ-search-hint" aria-live="polite">Results update as you type.</span>
         </div>
         <div id="occ-list" class="occ-grid">
-          {indexData.occupations.map((occ) => {
-            const cat = categories[occ.slug] || 'other';
-            return (
-              <a
-                href={`/salaries/${occ.slug}/`}
-                class="occ-card"
-                data-occ-title={occ.title.toLowerCase()}
-                data-occ-category={cat}
-                data-occ-slug={occ.slug}
-              >
-                <span class="occ-category-tag" aria-hidden="true">{cat}</span>
-                <span class="occ-title">{occ.title}</span>
-                <span class="occ-code">SOC {occ.socCode}</span>
-              </a>
-            );
-          })}
+          {indexData.occupations.map((occ) => (
+            <a
+              href={`/salaries/${occ.slug}/`}
+              class="occ-card"
+              data-occ-title={occ.title.toLowerCase()}
+            >
+              <span class="occ-title">{occ.title}</span>
+              <span class="occ-code">SOC {occ.socCode}</span>
+            </a>
+          ))}
         </div>
-        <p id="occ-no-results" class="occ-no-results" hidden role="status">No jobs match your search. Try different words or another category.</p>
+        <p id="occ-no-results" class="occ-no-results" hidden role="status">No jobs match. Try different words.</p>
       </section>
 
       <div class="alert alert-info" role="note">
@@ -125,126 +97,82 @@ const jsonLd = {
     const search = document.getElementById('occ-search');
     const list = document.getElementById('occ-list');
     const noResults = document.getElementById('occ-no-results');
+    const hint = document.getElementById('occ-results-desc');
     if (!search || !list || !noResults) return;
 
     const cards = list.querySelectorAll('[data-occ-title]');
-    const categorySelect = document.getElementById('category-select');
     function filter() {
       const q = (search.value || '').trim().toLowerCase();
-      const cat = (categorySelect as HTMLSelectElement)?.value || '';
       let visible = 0;
       cards.forEach((card) => {
         const title = (card.getAttribute('data-occ-title') || '');
-        const cardCat = card.getAttribute('data-occ-category') || '';
-        const matchSearch = !q || title.includes(q);
-        const matchCat = !cat || cardCat === cat;
-        const show = matchSearch && matchCat;
+        const show = !q || title.includes(q);
         (card as HTMLElement).style.display = show ? '' : 'none';
         if (show) visible++;
       });
-      noResults.hidden = visible > 0 || (!q && !cat);
+      noResults.hidden = visible > 0 || !q;
+      if (hint) {
+        if (q) hint.textContent = visible + ' job' + (visible !== 1 ? 's' : '') + ' match.';
+        else hint.textContent = 'Results update as you type.';
+      }
     }
     search.addEventListener('input', filter);
     search.addEventListener('search', filter);
-    if (categorySelect) categorySelect.addEventListener('change', filter);
   })();
 </script>
 
 <style>
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    border: 0;
-  }
-
   .hero {
     background: var(--bg-inset);
     border-bottom: 1px solid var(--border);
     padding: 2.5rem 0 2rem;
   }
   .hero-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    margin-bottom: 0.4rem;
+    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+    margin-bottom: 0.5rem;
   }
   .hero-one {
     color: var(--text-muted);
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }
-  .hero-search-wrap {
-    max-width: 420px;
-    margin-bottom: 1.25rem;
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
-  .hero-search {
+
+  .section-title { font-size: 1.25rem; margin-bottom: 0.25rem; }
+  .section-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .section-states { margin-bottom: 2.5rem; }
+  .section-occ { margin-bottom: 2rem; }
+
+  .occ-search-wrap { margin-bottom: 1rem; }
+  .occ-search-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .occ-search-input {
     width: 100%;
-    padding: 0.75rem 1rem;
+    max-width: 360px;
+    padding: 0.65rem 0.9rem;
     font-size: 1rem;
     font-family: var(--font);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--white);
   }
-  .hero-search:focus {
+  .occ-search-input:focus {
     outline: none;
     border-color: var(--primary);
   }
-  .hero-search-hint {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text-faint);
-    margin-top: 0.35rem;
-  }
-  .hero-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .category-filter {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  .category-filter-label { font-size: 0.85rem; color: var(--text-muted); }
-  .category-select {
-    padding: 0.4rem 0.75rem;
-    font-family: var(--font);
-    font-size: 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--white);
-  }
-  .occ-category-tag {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-faint);
-    margin-bottom: 0.25rem;
-  }
-
-  .section-title {
-    font-family: var(--font-heading);
-    font-size: 1.35rem;
-    margin-bottom: 0.25rem;
-  }
-  .section-desc {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-  .section-states { margin-bottom: 2.5rem; }
-  .section-occ { margin-bottom: 2rem; }
+  .occ-search-hint { display: block; font-size: 0.8rem; color: var(--text-faint); margin-top: 0.35rem; }
 
   .state-card--coming { opacity: 0.5; cursor: default; pointer-events: none; }
-  .state-soon { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); margin-left: auto; }
+  .state-soon { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); margin-left: auto; }
 
   .occ-grid {
     display: grid;
@@ -264,22 +192,9 @@ const jsonLd = {
     border-color: var(--primary);
     background: var(--primary-light);
   }
-  .occ-title {
-    display: block;
-    font-weight: 500;
-    font-size: 0.875rem;
-    color: var(--primary);
-    margin-bottom: 0.1rem;
-  }
-  .occ-code {
-    font-size: 0.7rem;
-    color: var(--text-faint);
-  }
-  .occ-no-results {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    padding: 1rem 0;
-  }
+  .occ-title { display: block; font-weight: 500; font-size: 0.875rem; color: var(--primary); margin-bottom: 0.1rem; }
+  .occ-code { font-size: 0.7rem; color: var(--text-faint); }
+  .occ-no-results { color: var(--text-muted); font-size: 0.9rem; padding: 1rem 0; }
 
   @media (max-width: 640px) {
     .hero-actions { flex-direction: column; }

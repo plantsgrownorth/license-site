@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
-import categoriesJson from '../../../data/occupation-categories.json';
-const categories = categoriesJson as Record<string, string>;
-
 export async function getStaticPaths() {
   const stateFiles  = import.meta.glob('../../../data/states/*.json',      { eager: true });
   const occFiles    = import.meta.glob('../../../data/occupations/*.json', { eager: true });
@@ -99,11 +96,10 @@ if (type === 'state') {
         </>
       ) : (
         <>
-          <span class="eyebrow">{categories[data.slug] || 'salary'} · SOC {data.socCode}</span>
+          <span class="eyebrow">SOC {data.socCode} · Most current data</span>
           <h1>{data.title} Salary by State</h1>
           <p>National median: <strong>{fmt(data.national?.medianAnnual)}/yr</strong> · {fmtNum(data.national?.totalEmployment)} employed nationally</p>
           <div class="page-hero-meta">
-            <span class="badge">{categories[data.slug] || 'job'}</span>
             <span class="badge">{data.states.length} states</span>
             {data.typicalEducation && <span class="badge">{data.typicalEducation}</span>}
             {data.jobOutlookLabel && <span class="badge">{data.jobOutlookPercent}% growth · {data.jobOutlookLabel}</span>}
