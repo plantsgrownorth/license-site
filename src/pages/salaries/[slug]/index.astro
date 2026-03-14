@@ -18,7 +18,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-// ── helpers ────────────────────────────────────────────────────────────────────
+// helpers for numbers
 function fmt(n: number | null | undefined) {
   if (n == null) return 'N/A';
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
@@ -31,6 +31,7 @@ function pctDiff(val: number, ref: number) {
   const d = Math.round(((val - ref) / ref) * 100);
   return d >= 0 ? `+${d}%` : `${d}%`;
 }
+// function fmtShort(n) { return n == null ? '—' : '$' + (n/1000).toFixed(0) + 'k'; }  ended up not using
 
 const { type, data } = Astro.props;
 

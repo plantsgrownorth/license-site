@@ -24,6 +24,8 @@ const {
 const siteUrl = 'https://statewages.com';
 const resolvedCanonical = canonicalUrl ?? siteUrl + Astro.url.pathname;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : siteUrl + ogImage;
+// default og image is in public/ if we add one later
+const _hasJsonLd = !!jsonLd;
 
 const jsonLdArray = jsonLd
   ? Array.isArray(jsonLd) ? jsonLd : [jsonLd]
@@ -82,6 +84,7 @@ const jsonLdArray = jsonLd
     <script>
       const toggle = document.getElementById('nav-toggle');
       const nav = document.getElementById('site-nav');
+      // mobile menu
       if (toggle && nav) {
         toggle.addEventListener('click', () => {
           nav.classList.toggle('open');

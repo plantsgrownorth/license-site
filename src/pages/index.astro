@@ -3,9 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import indexData from '../data/index.json';
 
-// Load state files to determine which have data
+// which states actually have data (from the json files)
 const stateFiles = import.meta.glob('../data/states/*.json', { eager: true });
 const liveSlugs = new Set(Object.values(stateFiles).map((m: any) => m.default.stateSlug));
+const stateCount = indexData.states.length; // for later if we want to show count somewhere
 
 const title       = 'StateWages — Salary Data for Every Job in Every State';
 const description = 'Salary data for 800+ occupations across all 50 states. Median wages, percentile ranges, and employment counts from the most current federal occupational wage survey.';

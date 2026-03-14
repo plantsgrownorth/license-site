@@ -26,10 +26,11 @@
   --shadow:    0 1px 4px rgba(0,0,0,0.08);
 }
 
-/* ===== Reset ===== */
+/* reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 16px; scroll-behavior: smooth; }
+/* was 15px for a bit, 16 reads better */
 
 body {
   font-family: var(--font-sans);
@@ -69,6 +70,7 @@ li { margin-bottom: 0.3rem; }
   margin: 0 auto;
   padding: 0 1.5rem;
 }
+/* .container--narrow { max-width: 720px; }  might use for blog */
 
 .page-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -108,7 +110,7 @@ main { flex: 1; padding: 3rem 0 5rem; }
 }
 .site-logo:hover { color: rgba(255,255,255,0.85); }
 
-
+/* .site-logo img { height: 28px; }  no logo for now */
 .site-nav {
   display: flex;
   align-items: center;
@@ -297,6 +299,7 @@ main { flex: 1; padding: 3rem 0 5rem; }
 
 .btn-lg { padding: 0.75rem 1.6rem; font-size: 0.95rem; }
 
+/* card grid for states - same as before just renamed */
 /* ===== State Grid ===== */
 .state-grid {
   display: grid;
@@ -333,6 +336,8 @@ main { flex: 1; padding: 3rem 0 5rem; }
 
 .state-name { font-size: 0.85rem; font-weight: 400; color: var(--text); }
 
+/* legacy - tags used in some places still */
+.state-card--compact { padding: 0.5rem 0.65rem; }
 /* ===== Tags ===== */
 .tag {
   background: var(--bg-alt);
@@ -380,6 +385,8 @@ main { flex: 1; padding: 3rem 0 5rem; }
   border-color: var(--primary);
   color: var(--primary-dark);
 }
+.alert-warning { background: var(--accent-light); border-color: var(--accent); color: #7a3f05; }
+/* only using alert-info for now */
 
 /* ===== Disclaimer ===== */
 .disclaimer {
@@ -560,9 +567,10 @@ textarea { min-height: 130px; resize: vertical; }
   .nav-toggle { display: flex; }
   .site-header { position: relative; }
   .site-header .container { flex-wrap: wrap; }
-  .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .footer-grid { grid-template-columns: 1fr;  gap: 1.5rem; }
   .state-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
   .occ-grid { grid-template-columns: 1fr; }
   main { padding: 2rem 0 3.5rem; }
   .page-hero { padding: 2rem 0 1.75rem; }
 }
+/* print: could add .no-print { } if we need to hide something later */
