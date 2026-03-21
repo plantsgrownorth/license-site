@@ -33,6 +33,16 @@ If a deploy still fails:
 
 If `dist/` contains odd extra files like `index-YourPCName.html` next to `index.html`, that is often **sync or file locking**, not Astro. Delete `dist/` and rebuild; do not upload a polluted `dist/` manually.
 
+### New pages look “missing” after a good deploy
+
+If `/blog/` or the homepage still shows **old** content:
+
+1. **Workers & Pages → your project → Deployments** — confirm the latest commit is **Success** (not Failed).
+2. **Caching → Configuration** (zone `statewages.com`) → **Purge Everything** (or purge `https://statewages.com/blog/` only).
+3. Hard-refresh the browser (Ctrl+F5) or try an incognito window.
+
+Cloudflare’s edge cache can keep HTML for a while; purging fixes stale blog lists.
+
 ## Local build on Windows
 
 If `npm run build` fails with **EPERM** on `dist/`, OneDrive or another process may be locking `dist/`. Close the dev server, pause OneDrive sync for the folder, or delete `dist/` manually, then build again.
