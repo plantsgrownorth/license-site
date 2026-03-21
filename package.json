@@ -7,13 +7,16 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 astro build",
     "prebuild": "node scripts/generate-compare-data.js",
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
     "import-csv": "node scripts/csv-to-json.js",
     "publish-next": "node scripts/publish-next-post.js"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.1",

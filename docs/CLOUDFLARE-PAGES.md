@@ -14,11 +14,24 @@ Then **Retry deployment** on the failed run or push a new commit.
 
 ## Large static build (~20k pages)
 
-The Astro build can take **many minutes** and use a lot of memory. If a deploy fails:
+The Astro build can take **many minutes** and use a lot of memory. The default `npm run build` script sets **`NODE_OPTIONS=--max-old-space-size=8192`** (via `cross-env`) so Node is less likely to exit with **JavaScript heap out of memory** on Cloudflare's Linux builders.
 
-1. Open the failed deployment and read the **full build log** (scroll to the error).
+### 20,000 **file** limit (not page count)
+
+Cloudflare Pages allows **at most 20,000 files** per deployment, including **every HTML file plus** `_astro` JS/CSS, `sitemap.xml`, `robots.txt`, JSON, etc. This site is sized so that **routes + assets** can exceed that cap.
+
+**What we do in code:** static `/salaries/[state]/[occupation]/` pages are **not** generated when both **median** and **mean** annual wages are missing for that row (no useful detail page). That trims enough files to stay under the limit. Hubs still list the row; the occupation name is plain text when there is no detail URL.
+
+If a deploy still fails:
+
+1. Open the failed deployment and read the **full build log** (scroll to the error). "No deployment available" in the UI usually means the build **failed**; the log has the real reason (OOM, timeout, Node version, npm error, **file limit**).
 2. **Retry** once (transient OOM or timeout).
-3. If it always fails at the same step, paste the log into an issue or ask for help with the exact error line.
+3. If it always fails at the same step, use the exact error line from the log (timeout vs memory vs install vs **Pages only supports up to 20,000 files**).
+4. If the log shows **build time exceeded** Cloudflare's limit, you may need a paid tier or to reduce build work; memory alone won't fix a hard timeout.
+
+### Windows / OneDrive
+
+If `dist/` contains odd extra files like `index-YourPCName.html` next to `index.html`, that is often **sync or file locking**, not Astro. Delete `dist/` and rebuild; do not upload a polluted `dist/` manually.
 
 ## Local build on Windows
 

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import { hasStateOccupationDetail } from '../../../lib/salary-pages';
 export async function getStaticPaths() {
   const stateFiles  = import.meta.glob('../../../data/states/*.json',      { eager: true });
   const occFiles    = import.meta.glob('../../../data/occupations/*.json', { eager: true });
@@ -136,7 +137,13 @@ if (type === 'state') {
                   <tbody>
                     {sorted.map((occ: any) => (
                       <tr>
-                        <td><a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a></td>
+                        <td>
+                          {hasStateOccupationDetail(occ) ? (
+                            <a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a>
+                          ) : (
+                            occ.title
+                          )}
+                        </td>
                         <td class="num-col salary-cell">{fmt(occ.medianAnnual)}</td>
                         <td class="num-col">{fmt(occ.meanAnnual)}</td>
                         <td class="num-col">{fmtNum(occ.totalEmployment)}</td>
@@ -152,7 +159,11 @@ if (type === 'state') {
                 <ol class="sidebar-list">
                   {sorted.slice(0, 5).map((occ: any) => (
                     <li>
-                      <a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a>
+                      {hasStateOccupationDetail(occ) ? (
+                        <a href={`/salaries/${data.stateSlug}/${occ.slug}/`}>{occ.title}</a>
+                      ) : (
+                        occ.title
+                      )}
                       <span class="sidebar-salary">{fmt(occ.medianAnnual)}</span>
                     </li>
                   ))}
@@ -209,7 +220,13 @@ if (type === 'state') {
                           <td class="num-col salary-cell">{fmt(s.medianAnnual)}</td>
                           <td class="num-col"><span class={`pct-badge ${isPos ? 'pos' : 'neg'}`}>{diff}</span></td>
                           <td class="num-col">{fmtNum(s.totalEmployment)}</td>
-                          <td class="num-col"><a href={`/salaries/${s.stateSlug}/${data.slug}/`} class="row-link">View →</a></td>
+                          <td class="num-col">
+                            {hasStateOccupationDetail(s) ? (
+                              <a href={`/salaries/${s.stateSlug}/${data.slug}/`} class="row-link">View →</a>
+                            ) : (
+                              <span class="muted">—</span>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -232,7 +249,11 @@ if (type === 'state') {
                 <ol class="sidebar-list">
                   {sorted.slice(0, 5).map((s: any) => (
                     <li>
-                      <a href={`/salaries/${s.stateSlug}/${data.slug}/`}>{s.state}</a>
+                      {hasStateOccupationDetail(s) ? (
+                        <a href={`/salaries/${s.stateSlug}/${data.slug}/`}>{s.state}</a>
+                      ) : (
+                        s.state
+                      )}
                       <span class="sidebar-salary">{fmt(s.medianAnnual)}</span>
                     </li>
                   ))}
