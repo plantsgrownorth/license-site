@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import { hasStateOccupationDetail } from '../../../lib/salary-pages';
+import { buildNarrative } from '../../../lib/state-occupation-narrative';
 
 export async function getStaticPaths() {
   const stateFiles = import.meta.glob('../../../data/states/*.json',      { eager: true });
@@ -85,6 +86,8 @@ const faqSchema = {
   ],
 };
 
+const narrative = buildNarrative(occ, stateData, occHub);
+
 const bar = {
   pct10: barPct(occ.pct10Annual ?? occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
   pct25: barPct(occ.pct25Annual ?? occ.medianAnnual, occ.pct10Annual ?? occ.medianAnnual, occ.pct90Annual ?? occ.medianAnnual),
@@ -128,6 +131,12 @@ const bar = {
 
         <!-- Main Content -->
         <article>
+
+          {narrative.length > 0 && (
+            <div class="section-block narrative-block">
+              {narrative.map((s: string) => <p>{s}</p>)}
+            </div>
+          )}
 
           <!-- Salary Range Bar -->
           <div class="section-block">
@@ -328,6 +337,10 @@ const bar = {
 </BaseLayout>
 
 <style>
+  /* Narrative */
+  .narrative-block p { font-size: 0.95rem; line-height: 1.6; margin: 0 0 0.6rem; color: var(--text); }
+  .narrative-block p:last-child { margin-bottom: 0; }
+
   /* Hero */
   .detail-hero { padding-bottom: 2rem; }
   .hero-salary-row {
