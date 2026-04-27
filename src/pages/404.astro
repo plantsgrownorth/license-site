@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Page Not Found — StateWages';
+const description = "We couldn't find that page. Try one of these popular sections instead.";
+---
+
+<BaseLayout title={title} description={description} noIndex={true}>
+  <main id="main-content">
+    <div class="container">
+      <div class="notfound">
+        <span class="eyebrow">404</span>
+        <h1>That page isn't here</h1>
+        <p class="lead">
+          The URL you followed doesn't match any page on the site. It may have been moved, renamed, or it never existed.
+          Here's where most people are headed:
+        </p>
+
+        <div class="card-grid">
+          <a class="card" href="/">
+            <div class="card-title">Home</div>
+            <div class="card-desc">Browse salary data by state or occupation.</div>
+          </a>
+          <a class="card" href="/salaries/">
+            <div class="card-title">All salaries</div>
+            <div class="card-desc">800+ occupations across every U.S. state.</div>
+          </a>
+          <a class="card" href="/compare-states">
+            <div class="card-title">Compare states</div>
+            <div class="card-desc">See how the same job pays in different states.</div>
+          </a>
+          <a class="card" href="/compare-occupations">
+            <div class="card-title">Compare occupations</div>
+            <div class="card-desc">Compare pay across different jobs side-by-side.</div>
+          </a>
+          <a class="card" href="/blog">
+            <div class="card-title">Blog</div>
+            <div class="card-desc">Articles on wages, careers, and the data behind them.</div>
+          </a>
+          <a class="card" href="/about">
+            <div class="card-title">About</div>
+            <div class="card-desc">How this site is built and where the data comes from.</div>
+          </a>
+        </div>
+
+        <p class="hint">
+          Still stuck? <a href="/contact">Contact us</a> and we'll point you the right way.
+        </p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .notfound {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 0 5rem;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .lead {
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .card:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  .card-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted, #555);
+    line-height: 1.5;
+  }
+
+  .hint {
+    color: var(--text-muted, #555);
+    font-size: 0.95rem;
+  }
+</style>
